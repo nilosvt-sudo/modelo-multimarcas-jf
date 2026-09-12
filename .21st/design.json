@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "project": {
+    "name": "nextjs-postgresql-template",
+    "productType": null,
+    "stack": [
+      "nextjs",
+      "react",
+      "tailwind-v4"
+    ]
+  },
+  "sources": {
+    "tokens": [
+      "src/app/globals.css"
+    ],
+    "components": [],
+    "assets": [
+      "public/images"
+    ],
+    "instructions": []
+  },
+  "design": {
+    "colorMode": "light",
+    "colors": {
+      "--brand-border": {
+        "value": "#232a38",
+        "source": "src/app/globals.css"
+      }
+    },
+    "typography": {
+      "--display-font": {
+        "value": "\"Chakra Petch\", \"Michroma\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+        "source": "src/app/globals.css"
+      },
+      "--font-speed": {
+        "value": "\"Chakra Petch\", sans-serif",
+        "source": "src/app/globals.css"
+      },
+      "--font-tech": {
+        "value": "\"Michroma\", sans-serif",
+        "source": "src/app/globals.css"
+      },
+      "--font-hand": {
+        "value": "\"Caveat\", cursive",
+        "source": "src/app/globals.css"
+      },
+      "--body-font": {
+        "value": "\"Inter\", -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+        "source": "src/app/globals.css"
+      }
+    },
+    "spacing": {},
+    "radius": {},
+    "shadows": {},
+    "motion": {},
+    "density": "unknown"
+  },
+  "components": {
+    "installed": [],
+    "preferredPrimitives": [],
+    "patterns": []
+  },
+  "constraints": {
+    "must": [],
+    "avoid": []
+  },
+  "decisions": [],
+  "evidence": [
+    {
+      "fact": "design.colorMode:light",
+      "source": "src/app/globals.css"
+    },
+    {
+      "fact": "design.tokens",
+      "source": "src/app/globals.css"
+    },
+    {
+      "fact": "project.stack:nextjs",
+      "source": "package.json"
+    },
+    {
+      "fact": "project.stack:react",
+      "source": "package.json"
+    },
+    {
+      "fact": "project.stack:tailwind-v4",
+      "source": "package.json"
+    }
+  ],
+  "generatedAt": "2026-09-12T00:18:36.080Z"
+}

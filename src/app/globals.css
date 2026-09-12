@@ -1,0 +1,160 @@
+@import "tailwindcss";
+
+:root {
+  /* Real Brand Colors from Modelo Multimarcas Official Media */
+  --brand-red: #e30613;
+  --brand-red-dark: #b8050f;
+  --brand-red-hover: #c40510;
+  --brand-red-neon: #ff1e2d;
+  --brand-blue: #0066ff;
+  --brand-blue-dark: #004ecc;
+  --brand-blue-hover: #1a75ff;
+  --brand-black: #06070a;
+  --brand-charcoal: #0e1117;
+  --brand-graphite: #151821;
+  --brand-surface: #1b202c;
+  --brand-border: #232a38;
+  --brand-silver: #94a3b8;
+
+  /* Speed & Automotive Performance Typography */
+  --display-font: "Chakra Petch", "Michroma", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-speed: "Chakra Petch", sans-serif;
+  --font-tech: "Michroma", sans-serif;
+  --font-hand: "Caveat", cursive;
+  --body-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  background: #f8fafc;
+  color-scheme: light;
+}
+
+body {
+  font-family: var(--body-font);
+  font-size: 0.975rem;
+  line-height: 1.55;
+  background: #f8fafc;
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* Speed and High-Performance Automotive Headings */
+h1,
+h2,
+h3,
+h4,
+.font-display {
+  font-family: var(--display-font);
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+h1 {
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.08;
+}
+
+h2 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+}
+
+h3 {
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+/* Automotive Typography Utility Classes */
+.font-speed {
+  font-family: var(--font-speed);
+}
+
+.font-tech {
+  font-family: var(--font-tech);
+}
+
+.font-hand {
+  font-family: var(--font-hand);
+}
+
+.speed-italic {
+  font-family: var(--font-speed);
+  font-style: italic;
+}
+
+/* Tabular figures for pricing, mileage and automotive specs */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Editorial Text Selection */
+::selection {
+  background: #e30613;
+  color: #ffffff;
+}
+
+/* Showroom Glow & Racing Accents */
+.showroom-card-border {
+  border: 1px solid #232a38;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.showroom-card-border:hover {
+  border-color: rgba(227, 6, 19, 0.5);
+  box-shadow: 0 0 25px rgba(227, 6, 19, 0.15);
+}
+
+/* 21st.dev Animations: Marquee, Shimmer and Glow */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(200%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--duration) linear infinite;
+}
+
+.animate-marquee-vertical {
+  animation: marquee-vertical var(--duration) linear infinite;
+}
+
+.animate-shimmer {
+  animation: shimmer 2.5s infinite;
+}
+
