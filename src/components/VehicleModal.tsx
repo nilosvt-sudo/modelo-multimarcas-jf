@@ -120,21 +120,21 @@ export default function VehicleModal({
       />
 
       {/* Modal Card */}
-      <div className="relative bg-white rounded-3xl shadow-2xl max-w-5xl w-full max-h-[92vh] overflow-y-auto z-10 flex flex-col border border-slate-200">
+      <div className="relative bg-white dark:bg-[#0e1118] rounded-3xl shadow-2xl max-w-5xl w-full max-h-[92vh] overflow-y-auto z-10 flex flex-col border border-slate-200 dark:border-zinc-800 text-slate-900 dark:text-zinc-100 transition-colors">
         {/* Sticky Modal Header / Close */}
-        <div className="sticky top-0 right-0 z-20 flex items-center justify-between px-6 py-4 bg-white/95 backdrop-blur-md border-b border-slate-100">
+        <div className="sticky top-0 right-0 z-20 flex items-center justify-between px-6 py-4 bg-white/95 dark:bg-[#0e1118]/95 backdrop-blur-md border-b border-slate-100 dark:border-zinc-800">
           <div>
-            <span className="text-xs uppercase font-bold text-orange-600 tracking-wider">
+            <span className="text-xs uppercase font-bold text-[#e30613] tracking-wider font-speed">
               {vehicle.brand} • {vehicle.yearFabrication}/{vehicle.yearModel}
             </span>
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight font-speed">
               {vehicle.brand} {vehicle.model}
             </h2>
           </div>
 
           <button
             onClick={onClose}
-            className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors cursor-pointer"
+            className="w-10 h-10 rounded-full bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
             aria-label="Fechar modal"
           >
             <X className="w-5 h-5" />
@@ -161,7 +161,7 @@ export default function VehicleModal({
                 {/* Badge Overlay */}
                 <div className="absolute top-3 left-3 flex flex-wrap gap-2">
                   {vehicle.badge && (
-                    <span className="bg-orange-600 text-white text-xs font-black uppercase px-3 py-1 rounded-md shadow flex items-center gap-1">
+                    <span className="bg-[#e30613] text-white text-xs font-black uppercase px-3 py-1 rounded-md shadow flex items-center gap-1">
                       <Sparkles className="w-3.5 h-3.5" />
                       {vehicle.badge}
                     </span>
@@ -219,7 +219,7 @@ export default function VehicleModal({
                       onClick={() => setSelectedPhotoIndex(idx)}
                       className={`relative w-20 h-14 rounded-lg overflow-hidden shrink-0 border-2 transition-all cursor-pointer ${
                         selectedPhotoIndex === idx
-                          ? "border-orange-500 scale-105 shadow-md"
+                          ? "border-[#e30613] scale-105 shadow-md"
                           : "border-transparent opacity-70 hover:opacity-100"
                       }`}
                     >
@@ -231,17 +231,17 @@ export default function VehicleModal({
 
               {/* Trust Badges Row */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 pt-2">
-                <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 text-xs font-semibold flex items-center gap-2">
+                <div className="p-2.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300 text-xs font-semibold flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>Laudo 100% Dekra/SuperVisão</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-orange-50 border border-orange-200 text-orange-900 text-xs font-semibold flex items-center gap-2">
-                  <Award className="w-4 h-4 text-orange-600 shrink-0" />
+                <div className="p-2.5 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 text-red-900 dark:text-red-300 text-xs font-semibold flex items-center gap-2">
+                  <Award className="w-4 h-4 text-[#e30613] shrink-0" />
                   <span>1 Ano Garantia Loja</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-900 text-xs font-semibold flex items-center gap-2 col-span-2 sm:col-span-1">
+                <div className="p-2.5 rounded-xl bg-slate-100 dark:bg-zinc-800/80 border border-slate-200 dark:border-zinc-700 text-slate-900 dark:text-zinc-200 text-xs font-semibold flex items-center gap-2 col-span-2 sm:col-span-1">
                   <FileCheck className="w-4 h-4 text-[#e30613] shrink-0" />
-                  <span>IPVA 2025 Quitado</span>
+                  <span>IPVA 2026 Quitado</span>
                 </div>
               </div>
             </div>
@@ -249,20 +249,20 @@ export default function VehicleModal({
             {/* Information Column (5 cols) */}
             <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
               <div>
-                <p className="text-sm font-medium text-slate-500 mb-1">{vehicle.version}</p>
+                <p className="text-sm font-medium text-slate-500 dark:text-zinc-400 mb-1">{vehicle.version}</p>
                 <div className="flex items-baseline gap-3 mb-2">
-                  <span className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
+                  <span className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight font-speed">
                     {formatCurrency(vehicle.price)}
                   </span>
                 </div>
 
                 {/* FIPE comparison notice */}
                 {vehicle.fipePrice && (
-                  <div className="flex items-center gap-2 text-xs text-slate-600 mb-4 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
-                    <span className="font-semibold text-slate-700">Tabela FIPE:</span>
+                  <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-zinc-300 mb-4 bg-slate-50 dark:bg-[#141822] p-2.5 rounded-xl border border-slate-200 dark:border-zinc-800">
+                    <span className="font-semibold text-slate-700 dark:text-zinc-200">Tabela FIPE:</span>
                     <span>{formatCurrency(vehicle.fipePrice)}</span>
                     {isBelowFipe && (
-                      <span className="ml-auto font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded">
+                      <span className="ml-auto font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/50 px-2 py-0.5 rounded border border-emerald-300 dark:border-emerald-800">
                         Economia de {formatCurrency(fipeSavings)}
                       </span>
                     )}
@@ -270,52 +270,52 @@ export default function VehicleModal({
                 )}
 
                 {/* Specifications Grid */}
-                <div className="grid grid-cols-2 gap-2.5 mb-6 text-xs text-slate-700">
-                  <div className="flex items-center gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                    <Gauge className="w-4 h-4 text-orange-500" />
+                <div className="grid grid-cols-2 gap-2.5 mb-6 text-xs text-slate-700 dark:text-zinc-300">
+                  <div className="flex items-center gap-2 p-2.5 bg-slate-50 dark:bg-[#141822] rounded-xl border border-slate-100 dark:border-zinc-800">
+                    <Gauge className="w-4 h-4 text-[#e30613]" />
                     <div>
-                      <span className="text-[10px] text-slate-400 block">Km Rodados</span>
-                      <strong className="text-slate-900">{formatMileage(vehicle.mileage)}</strong>
+                      <span className="text-[10px] text-slate-400 dark:text-zinc-500 block font-medium">Km Rodados</span>
+                      <strong className="text-slate-900 dark:text-white font-speed">{formatMileage(vehicle.mileage)}</strong>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                    <Calendar className="w-4 h-4 text-orange-500" />
+                  <div className="flex items-center gap-2 p-2.5 bg-slate-50 dark:bg-[#141822] rounded-xl border border-slate-100 dark:border-zinc-800">
+                    <Calendar className="w-4 h-4 text-[#e30613]" />
                     <div>
-                      <span className="text-[10px] text-slate-400 block">Ano Fab / Mod</span>
-                      <strong className="text-slate-900">{vehicle.yearFabrication} / {vehicle.yearModel}</strong>
+                      <span className="text-[10px] text-slate-400 dark:text-zinc-500 block font-medium">Ano Fab / Mod</span>
+                      <strong className="text-slate-900 dark:text-white font-speed">{vehicle.yearFabrication} / {vehicle.yearModel}</strong>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                    <Cog className="w-4 h-4 text-orange-500" />
+                  <div className="flex items-center gap-2 p-2.5 bg-slate-50 dark:bg-[#141822] rounded-xl border border-slate-100 dark:border-zinc-800">
+                    <Cog className="w-4 h-4 text-[#e30613]" />
                     <div>
-                      <span className="text-[10px] text-slate-400 block">Câmbio</span>
-                      <strong className="text-slate-900">{vehicle.transmission}</strong>
+                      <span className="text-[10px] text-slate-400 dark:text-zinc-500 block font-medium">Câmbio</span>
+                      <strong className="text-slate-900 dark:text-white">{vehicle.transmission}</strong>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                    <Fuel className="w-4 h-4 text-orange-500" />
+                  <div className="flex items-center gap-2 p-2.5 bg-slate-50 dark:bg-[#141822] rounded-xl border border-slate-100 dark:border-zinc-800">
+                    <Fuel className="w-4 h-4 text-[#e30613]" />
                     <div>
-                      <span className="text-[10px] text-slate-400 block">Combustível</span>
-                      <strong className="text-slate-900">{vehicle.fuel}</strong>
+                      <span className="text-[10px] text-slate-400 dark:text-zinc-500 block font-medium">Combustível</span>
+                      <strong className="text-slate-900 dark:text-white">{vehicle.fuel}</strong>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                    <Palette className="w-4 h-4 text-orange-500" />
+                  <div className="flex items-center gap-2 p-2.5 bg-slate-50 dark:bg-[#141822] rounded-xl border border-slate-100 dark:border-zinc-800">
+                    <Palette className="w-4 h-4 text-[#e30613]" />
                     <div>
-                      <span className="text-[10px] text-slate-400 block">Cor</span>
-                      <strong className="text-slate-900">{vehicle.color}</strong>
+                      <span className="text-[10px] text-slate-400 dark:text-zinc-500 block font-medium">Cor</span>
+                      <strong className="text-slate-900 dark:text-white">{vehicle.color}</strong>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2 p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                    <CarFront className="w-4 h-4 text-orange-500" />
+                  <div className="flex items-center gap-2 p-2.5 bg-slate-50 dark:bg-[#141822] rounded-xl border border-slate-100 dark:border-zinc-800">
+                    <CarFront className="w-4 h-4 text-[#e30613]" />
                     <div>
-                      <span className="text-[10px] text-slate-400 block">Carroceria</span>
-                      <strong className="text-slate-900">{vehicle.bodyType} {vehicle.doors ? `• ${vehicle.doors}p` : ""}</strong>
+                      <span className="text-[10px] text-slate-400 dark:text-zinc-500 block font-medium">Carroceria</span>
+                      <strong className="text-slate-900 dark:text-white">{vehicle.bodyType} {vehicle.doors ? `• ${vehicle.doors}p` : ""}</strong>
                     </div>
                   </div>
                 </div>
@@ -338,17 +338,17 @@ export default function VehicleModal({
                         onClose();
                         onOpenTestDriveForVehicle?.(vehicle);
                       }}
-                      className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold py-2.5 px-3 rounded-xl text-xs sm:text-sm transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                      className="w-full bg-slate-900 dark:bg-zinc-100 hover:bg-slate-800 dark:hover:bg-white text-white dark:text-zinc-900 font-semibold py-2.5 px-3 rounded-xl text-xs sm:text-sm transition-colors flex items-center justify-center gap-1.5 cursor-pointer font-speed tracking-wider uppercase"
                     >
-                      <CalendarCheck className="w-4 h-4 text-orange-400" />
+                      <CalendarCheck className="w-4 h-4 text-[#e30613]" />
                       Agendar Test-Drive
                     </button>
 
                     <a
                       href={`tel:${DEALERSHIP_INFO.phoneFormatted}`}
-                      className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold py-2.5 px-3 rounded-xl text-xs sm:text-sm transition-colors flex items-center justify-center gap-1.5"
+                      className="w-full bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-800 dark:text-zinc-200 font-semibold py-2.5 px-3 rounded-xl text-xs sm:text-sm transition-colors flex items-center justify-center gap-1.5 font-speed tracking-wider uppercase"
                     >
-                      <Phone className="w-4 h-4 text-orange-500" />
+                      <Phone className="w-4 h-4 text-[#e30613]" />
                       Ligar para Loja
                     </a>
                   </div>
@@ -358,11 +358,11 @@ export default function VehicleModal({
           </div>
 
           {/* Features and Description Section */}
-          <div className="border-t border-slate-200 pt-6 space-y-6">
+          <div className="border-t border-slate-200 dark:border-zinc-800 pt-6 space-y-6">
             {/* Description */}
             <div>
-              <h3 className="text-base font-bold text-slate-900 mb-2">Sobre este Veículo</h3>
-              <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-2 font-speed uppercase tracking-wider">Sobre este Veículo</h3>
+              <p className="text-sm text-slate-600 dark:text-zinc-300 leading-relaxed whitespace-pre-line bg-slate-50 dark:bg-[#141822] p-4 rounded-2xl border border-slate-200/80 dark:border-zinc-800">
                 {vehicle.description}
               </p>
             </div>
@@ -370,16 +370,16 @@ export default function VehicleModal({
             {/* Features Checklist */}
             {featuresList.length > 0 && (
               <div>
-                <h3 className="text-base font-bold text-slate-900 mb-3">
+                <h3 className="text-base font-bold text-slate-900 dark:text-white mb-3 font-speed uppercase tracking-wider">
                   Itens de Série e Opcionais ({featuresList.length})
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
                   {featuresList.map((feature, idx) => (
                     <div
                       key={idx}
-                      className="flex items-center gap-2 p-2 rounded-lg bg-slate-50 border border-slate-100 text-xs text-slate-700 font-medium"
+                      className="flex items-center gap-2 p-2 rounded-lg bg-slate-50 dark:bg-[#141822] border border-slate-100 dark:border-zinc-800 text-xs text-slate-700 dark:text-zinc-300 font-medium"
                     >
-                      <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <CheckCircle className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                       <span>{feature}</span>
                     </div>
                   ))}

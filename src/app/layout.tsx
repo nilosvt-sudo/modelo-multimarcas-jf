@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 import { DEALERSHIP_INFO } from "@/lib/constants";
+import { ThemeProvider } from "@/context/ThemeContext";
 
 export const metadata: Metadata = {
   title: "Modelo Multimarcas JF | Seminovos em Juiz de Fora",
@@ -47,13 +48,35 @@ export default function RootLayout({ children }: { children: ReactNode }) {
           href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Chakra+Petch:ital,wght@0,400;0,500;0,600;0,700;1,600;1,700;1,800&family=Inter:wght@400;500;600;700&family=Michroma&display=swap"
           rel="stylesheet"
         />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var saved = localStorage.getItem('modelo_jf_theme');
+                  var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (saved === 'dark' || (!saved && prefersDark)) {
+                    document.documentElement.classList.add('dark');
+                    document.documentElement.style.colorScheme = 'dark';
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                    document.documentElement.style.colorScheme = 'light';
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
       </head>
       <body
         suppressHydrationWarning
-        className="bg-slate-50 text-slate-900 antialiased min-h-screen flex flex-col font-sans"
+        className="bg-slate-50 dark:bg-[#06070a] text-slate-900 dark:text-slate-100 antialiased min-h-screen flex flex-col font-sans transition-colors duration-200"
       >
-        {children}
+        <ThemeProvider>
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+

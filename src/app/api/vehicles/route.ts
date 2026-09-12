@@ -1,10 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { vehicles } from "@/db/schema";
-import { seedDatabase, initialVehicles } from "@/db/seed";
+import { seedDatabase } from "@/db/seed";
 import { and, desc, asc, gte, lte, ilike, or, eq, sql } from "drizzle-orm";
+import { getLocalVehicles, addLocalVehicle } from "@/lib/vehiclesStore";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
+  const { searchParams } = new URL(request.url);
+  const brand = searchParams.get("brand");
+  const model = searchParams.get("model");
+  const priceMin = searchParams.get("priceMin");
+  const priceMax = searchParams.get("priceMax");
+  const yearMin = searchParams.get("yearMin");
+  const yearMax = searchParams.get("yearMax");
+  const transmission = searchParams.get("transmission");
+  const fuel = searchParams.get("fuel");
+  const bodyType = searchParams.get("bodyType");
+  const search = searchParams.get("search");
+  const sortBy = searchParams.get("sortBy") || "recent";
+  const status = searchParams.get("status");
+  const featuredOnly = searchParams.get("featuredOnly") === "true";
+
   try {
     // Check if db has records, if not, auto seed
     const countCheck = await db.select({ count: sql<number>`count(*)` }).from(vehicles);
@@ -12,24 +30,8 @@ export async function GET(request: NextRequest) {
       await seedDatabase(false);
     }
 
-    const { searchParams } = new URL(request.url);
-    const brand = searchParams.get("brand");
-    const model = searchParams.get("model");
-    const priceMin = searchParams.get("priceMin");
-    const priceMax = searchParams.get("priceMax");
-    const yearMin = searchParams.get("yearMin");
-    const yearMax = searchParams.get("yearMax");
-    const transmission = searchParams.get("transmission");
-    const fuel = searchParams.get("fuel");
-    const bodyType = searchParams.get("bodyType");
-    const search = searchParams.get("search");
-    const sortBy = searchParams.get("sortBy") || "recent";
-    const status = searchParams.get("status"); // default show available
-    const featuredOnly = searchParams.get("featuredOnly") === "true";
-
     const conditions = [];
 
-    // Filter by status if specified, or by default show all if in admin, or only available for public
     if (status && status !== "all") {
       conditions.push(eq(vehicles.status, status));
     }
@@ -105,14 +107,61 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json(results);
   } catch (error) {
-    console.warn("GET /api/vehicles: Falha ao conectar ao banco de dados, utilizando fallback de veículos:", error);
-    const fallbackList = initialVehicles.map((item, idx) => ({
-      ...item,
-      id: idx + 1,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }));
-    return NextResponse.json(fallbackList);
+    // Database offline ou não configurado: lê da persistência local
+    let localList = getLocalVehicles();
+
+    if (status && status !== "all") {
+      localList = localList.filter((v: any) => v.status === status);
+    }
+    if (featuredOnly) {
+      localList = localList.filter((v: any) => Boolean(v.isFeatured));
+    }
+    if (brand && brand !== "" && brand !== "Todas" && brand !== "Todos") {
+      localList = localList.filter((v: any) => v.brand.toLowerCase() === brand.toLowerCase());
+    }
+    if (model) {
+      localList = localList.filter((v: any) => v.model.toLowerCase().includes(model.toLowerCase()));
+    }
+    if (priceMin) {
+      localList = localList.filter((v: any) => parseFloat(v.price) >= parseFloat(priceMin));
+    }
+    if (priceMax) {
+      localList = localList.filter((v: any) => parseFloat(v.price) <= parseFloat(priceMax));
+    }
+    if (yearMin) {
+      localList = localList.filter((v: any) => v.yearFabrication >= parseInt(yearMin, 10));
+    }
+    if (yearMax) {
+      localList = localList.filter((v: any) => v.yearFabrication <= parseInt(yearMax, 10));
+    }
+    if (transmission && transmission !== "Todos") {
+      localList = localList.filter((v: any) => v.transmission === transmission);
+    }
+    if (fuel && fuel !== "Todos") {
+      localList = localList.filter((v: any) => v.fuel === fuel);
+    }
+    if (bodyType && bodyType !== "Todos") {
+      localList = localList.filter((v: any) => v.bodyType === bodyType);
+    }
+    if (search && search.trim() !== "") {
+      const q = search.trim().toLowerCase();
+      localList = localList.filter((v: any) =>
+        `${v.brand} ${v.model} ${v.version} ${v.color} ${v.description}`.toLowerCase().includes(q)
+      );
+    }
+
+    // Ordenação
+    if (sortBy === "price_asc") {
+      localList.sort((a: any, b: any) => parseFloat(a.price) - parseFloat(b.price));
+    } else if (sortBy === "price_desc") {
+      localList.sort((a: any, b: any) => parseFloat(b.price) - parseFloat(a.price));
+    } else if (sortBy === "year_desc") {
+      localList.sort((a: any, b: any) => b.yearFabrication - a.yearFabrication);
+    } else if (sortBy === "km_asc") {
+      localList.sort((a: any, b: any) => a.mileage - b.mileage);
+    }
+
+    return NextResponse.json(localList);
   }
 }
 
@@ -148,8 +197,14 @@ export async function POST(request: NextRequest) {
       status: body.status || "available",
     };
 
-    const inserted = await db.insert(vehicles).values(newVehicle).returning();
-    return NextResponse.json(inserted[0], { status: 201 });
+    try {
+      const inserted = await db.insert(vehicles).values(newVehicle).returning();
+      return NextResponse.json(inserted[0], { status: 201 });
+    } catch (dbErr) {
+      console.warn("DB offline, persistindo veículo no armazenamento local:", dbErr);
+      const savedLocal = addLocalVehicle(newVehicle);
+      return NextResponse.json(savedLocal, { status: 201 });
+    }
   } catch (error) {
     console.error("POST /api/vehicles error:", error);
     return NextResponse.json({ error: "Erro ao cadastrar veículo" }, { status: 500 });

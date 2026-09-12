@@ -2,27 +2,32 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { vehicles } from "@/db/schema";
 import { eq } from "drizzle-orm";
+import { getLocalVehicles, updateLocalVehicle, deleteLocalVehicle } from "@/lib/vehiclesStore";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const resolvedParams = await params;
-    const vehicleId = parseInt(resolvedParams.id, 10);
-    if (isNaN(vehicleId)) {
-      return NextResponse.json({ error: "ID inválido" }, { status: 400 });
-    }
+  const resolvedParams = await params;
+  const vehicleId = parseInt(resolvedParams.id, 10);
+  if (isNaN(vehicleId)) {
+    return NextResponse.json({ error: "ID inválido" }, { status: 400 });
+  }
 
+  try {
     const result = await db.select().from(vehicles).where(eq(vehicles.id, vehicleId));
     if (result.length === 0) {
       return NextResponse.json({ error: "Veículo não encontrado" }, { status: 404 });
     }
-
     return NextResponse.json(result[0]);
   } catch (error) {
-    console.error("GET /api/vehicles/[id] error:", error);
-    return NextResponse.json({ error: "Erro ao buscar veículo" }, { status: 500 });
+    const local = getLocalVehicles().find((v: any) => Number(v.id) === vehicleId);
+    if (!local) {
+      return NextResponse.json({ error: "Veículo não encontrado" }, { status: 404 });
+    }
+    return NextResponse.json(local);
   }
 }
 
@@ -30,13 +35,13 @@ export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const resolvedParams = await params;
-    const vehicleId = parseInt(resolvedParams.id, 10);
-    if (isNaN(vehicleId)) {
-      return NextResponse.json({ error: "ID inválido" }, { status: 400 });
-    }
+  const resolvedParams = await params;
+  const vehicleId = parseInt(resolvedParams.id, 10);
+  if (isNaN(vehicleId)) {
+    return NextResponse.json({ error: "ID inválido" }, { status: 400 });
+  }
 
+  try {
     const body = await request.json();
 
     const updateData: Record<string, unknown> = {
@@ -72,17 +77,26 @@ export async function PUT(
     if (body.ipvaPaid !== undefined) updateData.ipvaPaid = Boolean(body.ipvaPaid);
     if (body.status !== undefined) updateData.status = body.status;
 
-    const updated = await db
-      .update(vehicles)
-      .set(updateData)
-      .where(eq(vehicles.id, vehicleId))
-      .returning();
+    try {
+      const updated = await db
+        .update(vehicles)
+        .set(updateData)
+        .where(eq(vehicles.id, vehicleId))
+        .returning();
 
-    if (updated.length === 0) {
-      return NextResponse.json({ error: "Veículo não encontrado" }, { status: 404 });
+      if (updated.length === 0) {
+        return NextResponse.json({ error: "Veículo não encontrado" }, { status: 404 });
+      }
+
+      return NextResponse.json(updated[0]);
+    } catch (dbErr) {
+      console.warn("DB offline, atualizando localmente:", dbErr);
+      const updatedLocal = updateLocalVehicle(vehicleId, updateData);
+      if (!updatedLocal) {
+        return NextResponse.json({ error: "Veículo não encontrado" }, { status: 404 });
+      }
+      return NextResponse.json(updatedLocal);
     }
-
-    return NextResponse.json(updated[0]);
   } catch (error) {
     console.error("PUT /api/vehicles/[id] error:", error);
     return NextResponse.json({ error: "Erro ao atualizar veículo" }, { status: 500 });
@@ -93,23 +107,29 @@ export async function DELETE(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const resolvedParams = await params;
+  const vehicleId = parseInt(resolvedParams.id, 10);
+  if (isNaN(vehicleId)) {
+    return NextResponse.json({ error: "ID inválido" }, { status: 400 });
+  }
+
   try {
-    const resolvedParams = await params;
-    const vehicleId = parseInt(resolvedParams.id, 10);
-    if (isNaN(vehicleId)) {
-      return NextResponse.json({ error: "ID inválido" }, { status: 400 });
+    try {
+      const deleted = await db
+        .delete(vehicles)
+        .where(eq(vehicles.id, vehicleId))
+        .returning();
+
+      if (deleted.length === 0) {
+        return NextResponse.json({ error: "Veículo não encontrado" }, { status: 404 });
+      }
+
+      return NextResponse.json({ success: true, message: "Veículo removido com sucesso" });
+    } catch (dbErr) {
+      console.warn("DB offline, excluindo localmente:", dbErr);
+      deleteLocalVehicle(vehicleId);
+      return NextResponse.json({ success: true, message: "Veículo removido com sucesso" });
     }
-
-    const deleted = await db
-      .delete(vehicles)
-      .where(eq(vehicles.id, vehicleId))
-      .returning();
-
-    if (deleted.length === 0) {
-      return NextResponse.json({ error: "Veículo não encontrado" }, { status: 404 });
-    }
-
-    return NextResponse.json({ success: true, message: "Veículo removido com sucesso" });
   } catch (error) {
     console.error("DELETE /api/vehicles/[id] error:", error);
     return NextResponse.json({ error: "Erro ao excluir veículo" }, { status: 500 });

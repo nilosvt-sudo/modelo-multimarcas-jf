@@ -99,17 +99,17 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
   const whatsappUrl = generateWhatsAppLink(whatsappMessage);
 
   const content = (
-    <div className="bg-white rounded-3xl p-6 sm:p-8 md:p-10 border border-slate-200 shadow-xl text-slate-900">
+    <div className="bg-white dark:bg-[#0e1118] rounded-3xl p-6 sm:p-8 md:p-10 border border-slate-200 dark:border-zinc-800 shadow-xl text-slate-900 dark:text-zinc-100 transition-colors">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8 border-b border-slate-100 pb-5">
+      <div className="flex items-center justify-between mb-8 border-b border-slate-100 dark:border-zinc-800 pb-5">
         <div>
           <div className="inline-flex items-center gap-2 text-xs font-speed font-bold uppercase tracking-widest text-[#e30613] mb-1">
-            <span>{"// TROCA INTELIGENTE & VENDA DIRETA"}</span>
+            <span>{"// TROCA INTELIGENTE E VENDA DIRETA"}</span>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 tracking-tight uppercase italic font-speed">
+          <h2 className="text-2xl sm:text-3xl font-black text-zinc-900 dark:text-white tracking-tight uppercase italic font-speed">
             Avaliação do seu Veículo Usado
           </h2>
-          <p className="text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
+          <p className="text-sm text-slate-600 dark:text-zinc-400 mt-1 max-w-2xl leading-relaxed">
             Receba uma proposta justa e transparente com pagamento à vista ou utilize seu carro como entrada com opção de troco.
           </p>
         </div>
@@ -117,7 +117,7 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
         {onClose && (
           <button
             onClick={onClose}
-            className="w-10 h-10 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 flex items-center justify-center transition-colors cursor-pointer shrink-0"
+            className="w-10 h-10 rounded-full bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-zinc-700 flex items-center justify-center transition-colors cursor-pointer shrink-0"
           >
             <X className="w-5 h-5" />
           </button>
@@ -126,11 +126,11 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
 
       {submitted ? (
         <div className="text-center py-12 max-w-lg mx-auto space-y-4">
-          <div className="w-16 h-16 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-sm">
+          <div className="w-16 h-16 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto shadow-sm">
             <CheckCircle2 className="w-8 h-8" />
           </div>
-          <h3 className="text-2xl font-bold text-slate-900 font-speed uppercase">Avaliação Solicitada com Sucesso!</h3>
-          <p className="text-sm text-slate-600 leading-relaxed">
+          <h3 className="text-2xl font-bold text-slate-900 dark:text-white font-speed uppercase">Avaliação Solicitada com Sucesso!</h3>
+          <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed">
             Nossos avaliadores da Modelo Multimarcas JF vão analisar os dados do seu {tradeBrand} {tradeModel} e te enviar a proposta pelo WhatsApp em até 1 hora.
           </p>
           <a
@@ -144,7 +144,7 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
           </a>
           <button
             onClick={() => setSubmitted(false)}
-            className="text-xs text-slate-500 hover:text-slate-800 hover:underline block mx-auto cursor-pointer pt-2"
+            className="text-xs text-slate-500 dark:text-zinc-400 hover:text-slate-800 dark:hover:text-zinc-200 hover:underline block mx-auto cursor-pointer pt-2"
           >
             Avaliar outro veículo
           </button>
@@ -153,8 +153,8 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Step 1: Vehicle specs */}
-            <div className="space-y-4 bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200/80">
-              <div className="flex items-center gap-2 font-speed font-bold text-slate-900 text-sm uppercase tracking-wider pb-2 border-b border-slate-200">
+            <div className="space-y-4 bg-slate-50 dark:bg-[#12151e] p-5 sm:p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800">
+              <div className="flex items-center gap-2 font-speed font-bold text-slate-900 dark:text-zinc-100 text-sm uppercase tracking-wider pb-2 border-b border-slate-200 dark:border-zinc-800">
                 <CarFront className="w-4 h-4 text-[#e30613]" />
                 <span>1. Dados do seu Carro Atual</span>
               </div>
@@ -162,27 +162,27 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
               {/* Marca & Modelo: Coluna única no mobile, 2 colunas a partir de md */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 <div className="min-w-0">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 block font-speed">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 block font-speed">
                     Marca *
                   </label>
                   <select
                     required
                     value={tradeBrand}
                     onChange={(e) => setTradeBrand(e.target.value)}
-                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors cursor-pointer"
+                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#181d29] text-slate-900 dark:text-white focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors cursor-pointer"
                   >
-                    <option value="" className="bg-white text-slate-900">Selecione</option>
+                    <option value="" className="bg-white dark:bg-[#181d29] text-slate-900 dark:text-white">Selecione</option>
                     {COMMON_BRANDS.map((b) => (
-                      <option key={b} value={b} className="bg-white text-slate-900">
+                      <option key={b} value={b} className="bg-white dark:bg-[#181d29] text-slate-900 dark:text-white">
                         {b}
                       </option>
                     ))}
-                    <option value="Outra" className="bg-white text-slate-900">Outra marca</option>
+                    <option value="Outra" className="bg-white dark:bg-[#181d29] text-slate-900 dark:text-white">Outra marca</option>
                   </select>
                 </div>
 
                 <div className="min-w-0">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 block font-speed">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 block font-speed">
                     Modelo e Versão *
                   </label>
                   <input
@@ -191,7 +191,7 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
                     placeholder="Ex: Fox 1.6 Connect"
                     value={tradeModel}
                     onChange={(e) => setTradeModel(e.target.value)}
-                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors"
+                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#181d29] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors"
                   />
                 </div>
               </div>
@@ -199,7 +199,7 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
               {/* Ano, KM e Câmbio: 2 colunas no mobile (Câmbio ocupa a linha inteira abaixo) e 3 colunas em sm/desktop */}
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3.5">
                 <div className="min-w-0">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 block font-speed">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 block font-speed">
                     Ano *
                   </label>
                   <input
@@ -209,12 +209,12 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
                     max={2026}
                     value={tradeYear}
                     onChange={(e) => setTradeYear(e.target.value)}
-                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors"
+                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#181d29] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors"
                   />
                 </div>
 
                 <div className="min-w-0">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 block font-speed">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 block font-speed">
                     KM Rodados *
                   </label>
                   <input
@@ -223,21 +223,21 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
                     placeholder="Ex: 55000"
                     value={tradeMileage}
                     onChange={(e) => setTradeMileage(e.target.value)}
-                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors"
+                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#181d29] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors"
                   />
                 </div>
 
                 <div className="col-span-2 sm:col-span-1 min-w-0">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 block font-speed">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 block font-speed">
                     Câmbio
                   </label>
                   <select
                     value={tradeTransmission}
                     onChange={(e) => setTradeTransmission(e.target.value)}
-                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors cursor-pointer"
+                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#181d29] text-slate-900 dark:text-white focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors cursor-pointer"
                   >
                     {TRANSMISSION_TYPES.map((t) => (
-                      <option key={t} value={t} className="bg-white text-slate-900">
+                      <option key={t} value={t} className="bg-white dark:bg-[#181d29] text-slate-900 dark:text-white">
                         {t}
                       </option>
                     ))}
@@ -248,23 +248,23 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
               {/* Estado Geral e Financiamento: Linhas separadas no mobile (grid-cols-1) e 2 colunas a partir de md */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                 <div className="min-w-0">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 block font-speed">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 block font-speed">
                     Estado Geral
                   </label>
                   <select
                     value={tradeCondition}
                     onChange={(e) => setTradeCondition(e.target.value)}
-                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors cursor-pointer"
+                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#181d29] text-slate-900 dark:text-white focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors cursor-pointer"
                   >
-                    <option value="Excelente" className="bg-white text-slate-900">Excelente (Sem detalhes)</option>
-                    <option value="Bom" className="bg-white text-slate-900">Bom (Pequenos desgastes)</option>
-                    <option value="Regular" className="bg-white text-slate-900">Regular</option>
-                    <option value="Avariado" className="bg-white text-slate-900">Com detalhes a fazer</option>
+                    <option value="Excelente" className="bg-white dark:bg-[#181d29] text-slate-900 dark:text-white">Excelente (Sem detalhes)</option>
+                    <option value="Bom" className="bg-white dark:bg-[#181d29] text-slate-900 dark:text-white">Bom (Pequenos desgastes)</option>
+                    <option value="Regular" className="bg-white dark:bg-[#181d29] text-slate-900 dark:text-white">Regular</option>
+                    <option value="Avariado" className="bg-white dark:bg-[#181d29] text-slate-900 dark:text-white">Com detalhes a fazer</option>
                   </select>
                 </div>
 
                 <div className="min-w-0">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 block font-speed">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 block font-speed">
                     Financiamento Ativo?
                   </label>
                   <div className="w-full flex gap-2 h-11">
@@ -274,7 +274,7 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
                       className={`flex-1 h-full flex items-center justify-center rounded-lg text-xs font-bold border transition-all cursor-pointer font-speed tracking-wider ${
                         !hasFinancing
                           ? "bg-[#e30613] border-[#e30613] text-white shadow-sm"
-                          : "bg-white border-slate-300 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                          : "bg-white dark:bg-[#181d29] border-slate-300 dark:border-zinc-700 text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-800"
                       }`}
                     >
                       Quitado
@@ -285,7 +285,7 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
                       className={`flex-1 h-full flex items-center justify-center rounded-lg text-xs font-bold border transition-all cursor-pointer font-speed tracking-wider ${
                         hasFinancing
                           ? "bg-[#e30613] border-[#e30613] text-white shadow-sm"
-                          : "bg-white border-slate-300 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                          : "bg-white dark:bg-[#181d29] border-slate-300 dark:border-zinc-700 text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-zinc-800"
                       }`}
                     >
                       Financiado
@@ -296,15 +296,15 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
             </div>
 
             {/* Step 2: Customer Contact & Trade-in target */}
-            <div className="space-y-4 bg-slate-50 p-5 sm:p-6 rounded-2xl border border-slate-200/80 flex flex-col justify-between">
+            <div className="space-y-4 bg-slate-50 dark:bg-[#12151e] p-5 sm:p-6 rounded-2xl border border-slate-200/80 dark:border-zinc-800 flex flex-col justify-between">
               <div className="space-y-4">
-                <div className="flex items-center gap-2 font-speed font-bold text-slate-900 text-sm uppercase tracking-wider pb-2 border-b border-slate-200">
+                <div className="flex items-center gap-2 font-speed font-bold text-slate-900 dark:text-zinc-100 text-sm uppercase tracking-wider pb-2 border-b border-slate-200 dark:border-zinc-800">
                   <BadgeDollarSign className="w-4 h-4 text-[#e30613]" />
-                  <span>2. Seus Dados & Interesse</span>
+                  <span>2. Seus Dados e Interesse</span>
                 </div>
 
                 <div className="min-w-0">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 block font-speed">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 block font-speed">
                     Seu Nome Completo *
                   </label>
                   <input
@@ -313,13 +313,13 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
                     placeholder="Ex: Carlos Eduardo"
                     value={customerName}
                     onChange={(e) => setCustomerName(e.target.value)}
-                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors"
+                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#181d29] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div className="min-w-0">
-                    <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 block font-speed">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 block font-speed">
                       WhatsApp *
                     </label>
                     <input
@@ -328,12 +328,12 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
                       placeholder="(32) 99999-9999"
                       value={customerPhone}
                       onChange={(e) => setCustomerPhone(e.target.value)}
-                      className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors"
+                      className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#181d29] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors"
                     />
                   </div>
 
                   <div className="min-w-0">
-                    <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 block font-speed">
+                    <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 block font-speed">
                       E-mail (Opcional)
                     </label>
                     <input
@@ -341,23 +341,23 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
                       placeholder="email@exemplo.com"
                       value={customerEmail}
                       onChange={(e) => setCustomerEmail(e.target.value)}
-                      className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors"
+                      className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#181d29] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors"
                     />
                   </div>
                 </div>
 
                 <div className="min-w-0">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 block font-speed">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 block font-speed">
                     Deseja trocar por qual carro do nosso estoque?
                   </label>
                   <select
                     value={interestedVehicleId}
                     onChange={(e) => setInterestedVehicleId(e.target.value)}
-                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 bg-white text-slate-900 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors cursor-pointer"
+                    className="w-full h-11 px-3 text-sm rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#181d29] text-slate-900 dark:text-white focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors cursor-pointer"
                   >
-                    <option value="" className="bg-white text-slate-900">Apenas quero vender meu carro (Sem troca)</option>
+                    <option value="" className="bg-white dark:bg-[#181d29] text-slate-900 dark:text-white">Apenas quero vender meu carro (Sem troca)</option>
                     {vehicles.map((v) => (
-                      <option key={v.id} value={v.id} className="bg-white text-slate-900">
+                      <option key={v.id} value={v.id} className="bg-white dark:bg-[#181d29] text-slate-900 dark:text-white">
                         {v.brand} {v.model} {v.version} ({v.yearFabrication})
                       </option>
                     ))}
@@ -365,7 +365,7 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
                 </div>
 
                 <div className="min-w-0">
-                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1.5 block font-speed">
+                  <label className="text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-zinc-300 mb-1.5 block font-speed">
                     Observações adicionais (opcionais)
                   </label>
                   <textarea
@@ -373,7 +373,7 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
                     placeholder="Ex: Pneus novos, revisões na concessionária, manual e chave reserva..."
                     value={notes}
                     onChange={(e) => setNotes(e.target.value)}
-                    className="w-full p-3 text-sm rounded-lg border border-slate-300 bg-white text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors resize-none"
+                    className="w-full p-3 text-sm rounded-lg border border-slate-300 dark:border-zinc-700 bg-white dark:bg-[#181d29] text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] transition-colors resize-none"
                   />
                 </div>
               </div>
@@ -386,9 +386,9 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
                   required
                   checked={consentLGPD}
                   onChange={(e) => setConsentLGPD(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 rounded bg-white border-slate-300 text-[#e30613] focus:ring-[#e30613] cursor-pointer shrink-0"
+                  className="mt-0.5 w-4 h-4 rounded bg-white dark:bg-[#181d29] border-slate-300 dark:border-zinc-700 text-[#e30613] focus:ring-[#e30613] cursor-pointer shrink-0"
                 />
-                <label htmlFor="consent-appraisal-lgpd" className="text-[11px] text-slate-500 cursor-pointer select-none leading-relaxed">
+                <label htmlFor="consent-appraisal-lgpd" className="text-[11px] text-slate-500 dark:text-zinc-400 cursor-pointer select-none leading-relaxed">
                   Concordo com o tratamento dos meus dados e do veículo para avaliação e contato comercial pela Modelo Multimarcas JF, nos termos da Lei Geral de Proteção de Dados (LGPD).
                 </label>
               </div>
@@ -424,7 +424,7 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
     if (!isOpen) return null;
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6">
-        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={onClose} />
+        <div className="fixed inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm" onClick={onClose} />
         <div className="relative max-w-4xl w-full max-h-[92vh] overflow-y-auto z-10">
           {content}
         </div>
@@ -433,7 +433,7 @@ ${interestedVehicleId ? `- Interesse no carro do estoque: ${vehicles.find(v => v
   }
 
   return (
-    <section id="avaliar" className="py-16 sm:py-20 bg-white text-slate-900 scroll-mt-20 border-b border-slate-200">
+    <section id="avaliar" className="py-16 sm:py-20 bg-white dark:bg-[#06070a] text-slate-900 dark:text-zinc-100 scroll-mt-20 border-b border-slate-200 dark:border-zinc-800/80 transition-colors">
       <div className="max-w-[1680px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16">{content}</div>
     </section>
   );

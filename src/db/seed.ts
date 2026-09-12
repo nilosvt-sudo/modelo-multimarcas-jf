@@ -572,7 +572,7 @@ export async function seedDatabase(force = false) {
         tradeCondition: "Excelente",
         hasFinancing: false,
         interestedVehicleName: "Toyota Corolla 2.0 XEi",
-        notes: "Carro quitado com IPVA 2025 pago e 4 pneus novos.",
+        notes: "Carro quitado com IPVA 2026 pago e 4 pneus novos.",
         estimatedValue: "44000.00",
         status: "pending",
       });

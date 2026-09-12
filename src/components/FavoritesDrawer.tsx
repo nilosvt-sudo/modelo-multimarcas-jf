@@ -43,20 +43,20 @@ export default function FavoritesDrawer({
         onClick={onClose}
       />
 
-      <div className="fixed inset-y-0 right-0 max-w-md w-full bg-white shadow-2xl flex flex-col z-10">
+      <div className="fixed inset-y-0 right-0 max-w-md w-full bg-white dark:bg-[#0e1118] shadow-2xl flex flex-col z-10 border-l border-transparent dark:border-zinc-800 text-slate-900 dark:text-zinc-100 transition-colors">
         {/* Header */}
-        <div className="p-5 bg-slate-900 text-white flex items-center justify-between">
+        <div className="p-5 bg-slate-900 dark:bg-[#07090e] text-white flex items-center justify-between border-b dark:border-zinc-800">
           <div className="flex items-center gap-2.5">
-            <Heart className="w-5 h-5 text-rose-500 fill-rose-500" />
-            <h2 className="font-bold text-lg">Meus Veículos Salvos</h2>
-            <span className="text-xs bg-rose-500/20 text-rose-300 font-bold px-2 py-0.5 rounded-full border border-rose-500/30">
+            <Heart className="w-5 h-5 text-[#e30613] fill-[#e30613]" />
+            <h2 className="font-bold text-lg font-speed">Meus Veículos Salvos</h2>
+            <span className="text-xs bg-red-500/20 text-red-300 font-bold px-2 py-0.5 rounded-full border border-red-500/30">
               {favoriteVehicles.length}
             </span>
           </div>
 
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center justify-center transition-colors cursor-pointer"
+            className="w-8 h-8 rounded-full bg-slate-800 dark:bg-zinc-800 hover:bg-slate-700 dark:hover:bg-zinc-700 text-slate-300 flex items-center justify-center transition-colors cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -65,10 +65,10 @@ export default function FavoritesDrawer({
         {/* List of saved vehicles */}
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {favoriteVehicles.length === 0 ? (
-            <div className="text-center py-16 text-slate-500">
-              <Heart className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-              <p className="font-bold text-slate-700">Nenhum veículo salvo ainda</p>
-              <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+            <div className="text-center py-16 text-slate-500 dark:text-zinc-400">
+              <Heart className="w-12 h-12 text-slate-300 dark:text-zinc-700 mx-auto mb-3" />
+              <p className="font-bold text-slate-700 dark:text-zinc-200">Nenhum veículo salvo ainda</p>
+              <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-xs mx-auto">
                 Clique no coração nos cards dos carros para guardar seus modelos favoritos e comparar depois.
               </p>
             </div>
@@ -76,10 +76,10 @@ export default function FavoritesDrawer({
             favoriteVehicles.map((vehicle) => (
               <div
                 key={vehicle.id}
-                className="bg-slate-50 border border-slate-200 rounded-2xl p-3 flex gap-3 relative group hover:border-orange-300 transition-colors"
+                className="bg-slate-50 dark:bg-[#131620] border border-slate-200 dark:border-zinc-800 rounded-2xl p-3 flex gap-3 relative group hover:border-[#e30613] dark:hover:border-[#e30613] transition-colors"
               >
                 <div
-                  className="w-24 h-20 rounded-xl overflow-hidden bg-slate-200 shrink-0 cursor-pointer"
+                  className="w-24 h-20 rounded-xl overflow-hidden bg-slate-200 dark:bg-zinc-800 shrink-0 cursor-pointer"
                   onClick={() => {
                     onClose();
                     onSelectVehicle(vehicle);
@@ -96,7 +96,7 @@ export default function FavoritesDrawer({
                   <div>
                     <div className="flex items-start justify-between gap-1">
                       <h4
-                        className="font-bold text-slate-900 text-sm line-clamp-1 cursor-pointer hover:text-orange-600"
+                        className="font-bold text-slate-900 dark:text-white text-sm line-clamp-1 cursor-pointer hover:text-[#e30613] dark:hover:text-[#e30613] font-speed"
                         onClick={() => {
                           onClose();
                           onSelectVehicle(vehicle);
@@ -106,19 +106,19 @@ export default function FavoritesDrawer({
                       </h4>
                       <button
                         onClick={() => onRemoveFavorite(vehicle.id)}
-                        className="text-slate-400 hover:text-rose-500 p-1"
+                        className="text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 p-1 cursor-pointer"
                         title="Remover"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </button>
                     </div>
-                    <span className="text-[11px] text-slate-500 block">
+                    <span className="text-[11px] text-slate-500 dark:text-zinc-400 block font-medium">
                       {vehicle.yearFabrication} • {formatMileage(vehicle.mileage)}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between pt-1">
-                    <span className="font-extrabold text-orange-600 text-sm">
+                    <span className="font-extrabold text-[#e30613] text-sm font-speed">
                       {formatCurrency(vehicle.price)}
                     </span>
                     <button
@@ -126,7 +126,7 @@ export default function FavoritesDrawer({
                         onClose();
                         onSelectVehicle(vehicle);
                       }}
-                      className="text-[11px] font-semibold text-slate-700 hover:text-slate-900 underline"
+                      className="text-[11px] font-semibold text-slate-700 dark:text-zinc-300 hover:text-[#e30613] dark:hover:text-[#e30613] underline cursor-pointer"
                     >
                       Ver detalhes
                     </button>
@@ -139,7 +139,7 @@ export default function FavoritesDrawer({
 
         {/* Bottom Drawer Actions */}
         {favoriteVehicles.length > 0 && (
-          <div className="p-4 border-t border-slate-200 bg-slate-50 space-y-2">
+          <div className="p-4 border-t border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-[#0a0d13] space-y-2">
             <a
               href={generateWhatsAppLink(buildWhatsappFavoritesMsg())}
               target="_blank"
@@ -152,7 +152,7 @@ export default function FavoritesDrawer({
 
             <button
               onClick={onClearFavorites}
-              className="w-full text-xs text-rose-600 hover:text-rose-700 font-semibold py-1.5 transition-colors cursor-pointer"
+              className="w-full text-xs text-rose-600 dark:text-rose-400 hover:text-rose-700 dark:hover:text-rose-300 font-semibold py-1.5 transition-colors cursor-pointer"
             >
               Limpar Lista de Favoritos
             </button>

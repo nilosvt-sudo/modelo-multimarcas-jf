@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* Real Brand Colors from Modelo Multimarcas Official Media */
   --brand-red: #e30613;
@@ -33,6 +35,12 @@ html {
   color-scheme: light;
 }
 
+html.dark {
+  background: #06070a;
+  color: #f8fafc;
+  color-scheme: dark;
+}
+
 body {
   font-family: var(--body-font);
   font-size: 0.975rem;
@@ -41,6 +49,11 @@ body {
   color: #0f172a;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+html.dark body {
+  background: #06070a;
+  color: #f8fafc;
 }
 
 button,

@@ -85,7 +85,7 @@ export default function Footer() {
           {/* Col 3: Contact */}
           <div className="space-y-3">
             <h4 className="text-[#9CA3AF] font-bold text-xs uppercase tracking-wider font-speed">
-              Showroom & Atendimento
+              Showroom e Atendimento
             </h4>
             <div className="space-y-2.5 text-zinc-400 text-xs">
               <p className="flex items-start gap-2 leading-relaxed">
@@ -94,7 +94,7 @@ export default function Footer() {
               </p>
               <p className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#e30613] shrink-0" />
-                <span>{DEALERSHIP_INFO.phone} (WhatsApp & Atendimento)</span>
+                <span>{DEALERSHIP_INFO.phone} (WhatsApp e Atendimento)</span>
               </p>
               <p className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#e30613] shrink-0" />
@@ -113,7 +113,7 @@ export default function Footer() {
           {/* Col 4: Guarantees & Safe Buying */}
           <div className="space-y-3">
             <h4 className="text-[#9CA3AF] font-bold text-xs uppercase tracking-wider font-speed">
-              Procedência & Garantia
+              Procedência e Garantia
             </h4>
             <div className="bg-[#111317] border border-zinc-800 p-4 rounded-xl space-y-2 text-zinc-300">
               <div className="flex items-center gap-2 text-emerald-400 font-bold text-xs">

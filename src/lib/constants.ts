@@ -77,7 +77,7 @@ export const COMMON_FEATURES_LIST = [
   "Travas elétricas",
   "Alarme",
   "Central Multimídia",
-  "Apple CarPlay & Android Auto",
+  "Apple CarPlay e Android Auto",
   "Câmera de ré",
   "Sensor de estacionamento",
   "Bancos em couro",
