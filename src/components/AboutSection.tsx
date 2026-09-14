@@ -18,8 +18,11 @@ export default function AboutSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           {/* Left info column */}
           <div className="lg:col-span-6 space-y-6">
-            <div className="inline-flex items-center gap-2 text-xs font-speed font-bold uppercase tracking-widest text-[#e30613]">
-              <span>{"// TRADIÇÃO E PROCEDÊNCIA EM JF"}</span>
+            <div className="inline-flex items-center gap-2 text-xs font-speed font-bold uppercase tracking-widest">
+              <span className="w-2 h-2 rounded-full bg-[#0047cc]"></span>
+              <span className="text-[#0047cc] dark:text-[#3b82f6]">TRADIÇÃO E PROCEDÊNCIA</span>
+              <span className="text-slate-400">•</span>
+              <span className="text-[#e0121d] dark:text-[#ff3844]">JUIZ DE FORA</span>
             </div>
 
             <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-zinc-900 dark:text-white tracking-tight leading-tight uppercase italic font-speed">
@@ -30,10 +33,10 @@ export default function AboutSection() {
               A <strong className="text-slate-900 dark:text-white font-semibold">Modelo Multimarcas JF</strong> consolidou sua história na Av. Barão do Rio Branco com base na procedência inegociável de cada veículo e no relacionamento de longo prazo com clientes de Juiz de Fora e da Zona da Mata mineira.
             </p>
 
-            {/* Official Instagram 3 Pillars Grid */}
+            {/* 3 Pillars Duo-Tone harmonizados com a Logo Oficial */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0e1117] border-t-2 border-t-[#e30613] border-x border-b border-slate-200/90 dark:border-[#232a38] shadow-sm space-y-1.5">
-                <div className="w-8 h-8 rounded-lg bg-[#e30613]/10 text-[#e30613] flex items-center justify-center mb-1 font-speed font-bold">
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0e1117] border-t-2 border-t-[#0047cc] border-x border-b border-slate-200/90 dark:border-[#232a38] shadow-sm space-y-1.5">
+                <div className="w-8 h-8 rounded-lg bg-[#0047cc]/10 text-[#0047cc] dark:bg-[#0047cc]/20 dark:text-[#3b82f6] flex items-center justify-center mb-1 font-speed font-bold">
                   🤝
                 </div>
                 <h3 className="font-speed font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">SEMPRE AO SEU LADO</h3>
@@ -42,18 +45,18 @@ export default function AboutSection() {
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0e1117] border-t-2 border-t-zinc-800 dark:border-t-zinc-600 border-x border-b border-slate-200/90 dark:border-[#232a38] shadow-sm space-y-1.5">
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0e1117] border-t-2 border-t-slate-700 dark:border-t-slate-500 border-x border-b border-slate-200/90 dark:border-[#232a38] shadow-sm space-y-1.5">
                 <div className="w-8 h-8 rounded-lg bg-zinc-100 dark:bg-[#151821] text-zinc-900 dark:text-slate-200 flex items-center justify-center mb-1 font-speed font-bold">
                   🛡️
                 </div>
                 <h3 className="font-speed font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">QUALIDADE E SEGURANÇA</h3>
                 <p className="text-[11px] text-slate-600 dark:text-slate-400 leading-relaxed">
-                  100% dos veículos com laudo cautelar aprovado e garantia de 1 ano de motor e câmbio.
+                  100% dos veículos com laudo cautelar aprovado e garantia de procedência assegurada.
                 </p>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0e1117] border-t-2 border-t-[#e30613] border-x border-b border-slate-200/90 dark:border-[#232a38] shadow-sm space-y-1.5">
-                <div className="w-8 h-8 rounded-lg bg-[#e30613]/10 text-[#e30613] flex items-center justify-center mb-1 font-speed font-bold">
+              <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#0e1117] border-t-2 border-t-[#e0121d] border-x border-b border-slate-200/90 dark:border-[#232a38] shadow-sm space-y-1.5">
+                <div className="w-8 h-8 rounded-lg bg-[#e0121d]/10 text-[#e0121d] dark:bg-[#e0121d]/20 dark:text-[#ff3844] flex items-center justify-center mb-1 font-speed font-bold">
                   🚗
                 </div>
                 <h3 className="font-speed font-bold text-slate-900 dark:text-white text-xs uppercase tracking-wider">SEU SONHO SOBRE RODAS</h3>

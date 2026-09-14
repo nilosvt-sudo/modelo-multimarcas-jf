@@ -23,11 +23,11 @@ export const CarSlide: React.FC<CarSlideProps> = ({
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
-  // Ken Burns zoom effect (smooth, cinematic camera zoom)
-  const imageScale = interpolate(frame, [0, durationInFrames], [1, 1.12], {
+  // Ken Burns zoom effect (smooth, cinematic camera zoom without edge revealing)
+  const imageScale = interpolate(frame, [0, durationInFrames], [1.05, 1.16], {
     extrapolateRight: "clamp",
   });
-  const imageTranslateY = interpolate(frame, [0, durationInFrames], [0, -12], {
+  const imageTranslateY = interpolate(frame, [0, durationInFrames], [0, -10], {
     extrapolateRight: "clamp",
   });
 
@@ -71,7 +71,7 @@ export const CarSlide: React.FC<CarSlideProps> = ({
   const formattedMileage = new Intl.NumberFormat("pt-BR").format(vehicle.mileage);
 
   return (
-    <AbsoluteFill className="overflow-hidden bg-slate-950 font-sans select-none">
+    <AbsoluteFill className="overflow-hidden bg-slate-950 font-sans select-none w-full h-full">
       {/* Background Car Image with Ken Burns motion */}
       <div
         style={{
@@ -79,11 +79,16 @@ export const CarSlide: React.FC<CarSlideProps> = ({
           width: "100%",
           height: "100%",
         }}
-        className="w-full h-full relative"
+        className="w-full h-full absolute inset-0"
       >
         <Img
           src={vehicle.coverImage}
           className="w-full h-full object-cover"
+          style={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+          }}
           alt={`${vehicle.brand} ${vehicle.model}`}
         />
       </div>
@@ -102,7 +107,7 @@ export const CarSlide: React.FC<CarSlideProps> = ({
           className="flex items-center gap-3 bg-black/75 backdrop-blur-md border border-white/20 px-3.5 py-1.5 rounded-xl shadow-lg text-white"
         >
           <div className="w-6 h-6 rounded-md bg-white p-0.5 flex items-center justify-center overflow-hidden">
-            <img src="/images/logo-oficial.jpg" alt="Logo" className="w-full h-full object-contain" />
+            <img src="/images/logo-oficial.jpg" alt="Logo Oficial Modelo Multimarcas JF" className="w-full h-full object-contain" />
           </div>
           <span className="font-speed font-black tracking-wider text-xs uppercase text-white">
             MODELO MULTIMARCAS JF

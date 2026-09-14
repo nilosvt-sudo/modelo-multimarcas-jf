@@ -151,7 +151,7 @@ Simulação:
             <select
               value={selectedVehicleId}
               onChange={(e) => handleCarSelectChange(e.target.value)}
-              className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#e30613] focus:ring-1 focus:ring-[#e30613] mb-2"
+              className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#0047cc] focus:ring-1 focus:ring-[#0047cc] mb-2"
             >
               <option value="">Simulação Livre (Personalizar Valor)</option>
               {vehicles.map((v) => (
@@ -176,7 +176,7 @@ Simulação:
                   step={2000}
                   value={targetCarPrice}
                   onChange={(e) => setTargetCarPrice(parseFloat(e.target.value))}
-                  className="w-full accent-[#e30613] cursor-pointer"
+                  className="w-full accent-[#0047cc] cursor-pointer"
                 />
               </div>
             )}
@@ -186,7 +186,7 @@ Simulação:
           <div className="bg-[#121620] border border-[#242c3c] rounded-2xl p-5 space-y-3">
             <div className="flex justify-between items-baseline text-xs font-semibold text-slate-300">
               <span className="uppercase tracking-wider font-speed text-white">Valor da Entrada</span>
-              <span className="text-white font-black text-base sm:text-lg tabular-nums font-speed text-[#e30613]">
+              <span className="text-white font-black text-base sm:text-lg tabular-nums font-speed text-[#0047cc] dark:text-[#3b82f6]">
                 {formatCurrency(entryAmount)}
               </span>
             </div>
@@ -199,7 +199,7 @@ Simulação:
                 step={1000}
                 value={entryAmount}
                 onChange={(e) => setEntryAmount(parseFloat(e.target.value))}
-                className="w-full accent-[#e30613] cursor-pointer h-2 bg-[#1d2332] rounded-lg appearance-none"
+                className="w-full accent-[#0047cc] cursor-pointer h-2 bg-[#1d2332] rounded-lg appearance-none"
               />
             </div>
 
@@ -214,7 +214,7 @@ Simulação:
                   onClick={() => setEntryAmount(0)}
                   className={`py-2 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
                     entryAmount === 0
-                      ? "bg-[#e30613] text-white border-[#e30613] shadow-sm"
+                      ? "bg-[#0047cc] text-white border-[#0047cc] shadow-sm"
                       : "bg-[#181d28] text-slate-300 border-[#2d374a] hover:bg-[#222a3a] hover:text-white"
                   }`}
                 >
@@ -225,7 +225,7 @@ Simulação:
                   onClick={() => setEntryAmount(Math.round(targetCarPrice * 0.2))}
                   className={`py-2 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
                     Math.abs(entryAmount - targetCarPrice * 0.2) < 500
-                      ? "bg-[#e30613] text-white border-[#e30613] shadow-sm"
+                      ? "bg-[#0047cc] text-white border-[#0047cc] shadow-sm"
                       : "bg-[#181d28] text-slate-300 border-[#2d374a] hover:bg-[#222a3a] hover:text-white"
                   }`}
                 >
@@ -236,7 +236,7 @@ Simulação:
                   onClick={() => setEntryAmount(Math.round(targetCarPrice * 0.3))}
                   className={`py-2 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
                     Math.abs(entryAmount - targetCarPrice * 0.3) < 500
-                      ? "bg-[#e30613] text-white border-[#e30613] shadow-sm"
+                      ? "bg-[#0047cc] text-white border-[#0047cc] shadow-sm"
                       : "bg-[#181d28] text-slate-300 border-[#2d374a] hover:bg-[#222a3a] hover:text-white"
                   }`}
                 >
@@ -247,7 +247,7 @@ Simulação:
                   onClick={() => setEntryAmount(Math.round(targetCarPrice * 0.5))}
                   className={`py-2 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
                     Math.abs(entryAmount - targetCarPrice * 0.5) < 500
-                      ? "bg-[#e30613] text-white border-[#e30613] shadow-sm"
+                      ? "bg-[#0047cc] text-white border-[#0047cc] shadow-sm"
                       : "bg-[#181d28] text-slate-300 border-[#2d374a] hover:bg-[#222a3a] hover:text-white"
                   }`}
                 >
@@ -270,7 +270,7 @@ Simulação:
                   onClick={() => setMonths(m)}
                   className={`py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
                     months === m
-                      ? "bg-[#e30613] text-white shadow-md scale-105"
+                      ? "bg-gradient-to-r from-[#0047cc] to-[#005eff] text-white shadow-md scale-105"
                       : "bg-[#181d26] text-slate-300 border border-[#2b3342] hover:bg-[#222936] hover:text-white"
                   }`}
                 >
@@ -371,39 +371,39 @@ Simulação:
                 <input
                   type="text"
                   required
-                  placeholder="Ex: Carlos Eduardo Silveira"
+                  placeholder="Nome completo"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#e30613]"
+                  className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#0047cc]"
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-2.5">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
-                    WhatsApp *
-                  </label>
-                  <input
-                    type="tel"
-                    required
-                    placeholder="(32) 99999-9999"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#e30613]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
-                    CPF (Opcional)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="000.000.000-00"
-                    value={cpf}
-                    onChange={(e) => setCpf(e.target.value)}
-                    className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#e30613]"
-                  />
-                </div>
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                  WhatsApp <span className="text-[#e0121d]">*</span>
+                </label>
+                <input
+                  type="tel"
+                  required
+                  placeholder="(32) 99999-9999"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#0047cc]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                  CPF (Para Consulta Bancária) <span className="text-[#e0121d]">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="000.000.000-00"
+                  value={cpf}
+                  onChange={(e) => setCpf(e.target.value)}
+                  className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#0047cc]"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-2.5">
@@ -416,7 +416,7 @@ Simulação:
                     placeholder="DD/MM/AAAA"
                     value={birthDate}
                     onChange={(e) => setBirthDate(e.target.value)}
-                    className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#e30613]"
+                    className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#0047cc]"
                   />
                 </div>
                 <div>
@@ -428,7 +428,7 @@ Simulação:
                     placeholder="seuemail@exemplo.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#e30613]"
+                    className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#0047cc]"
                   />
                 </div>
               </div>
@@ -443,7 +443,7 @@ Simulação:
                     onClick={() => setHasCnh("sim")}
                     className={`py-2 rounded-lg text-xs font-semibold cursor-pointer border transition-colors ${
                       hasCnh === "sim"
-                        ? "bg-[#e30613] border-[#e30613] text-white"
+                        ? "bg-[#0047cc] border-[#0047cc] text-white"
                         : "bg-[#181d26] border-[#2b3342] text-slate-300 hover:bg-[#222936]"
                     }`}
                   >
@@ -454,7 +454,7 @@ Simulação:
                     onClick={() => setHasCnh("nao")}
                     className={`py-2 rounded-lg text-xs font-semibold cursor-pointer border transition-colors ${
                       hasCnh === "nao"
-                        ? "bg-[#e30613] border-[#e30613] text-white"
+                        ? "bg-[#0047cc] border-[#0047cc] text-white"
                         : "bg-[#181d26] border-[#2b3342] text-slate-300 hover:bg-[#222936]"
                     }`}
                   >
@@ -471,7 +471,7 @@ Simulação:
                   required
                   checked={consentLGPD}
                   onChange={(e) => setConsentLGPD(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 rounded border-slate-700 bg-[#181d26] text-[#e30613] focus:ring-[#e30613] cursor-pointer shrink-0"
+                  className="mt-0.5 w-4 h-4 rounded border-slate-700 bg-[#181d26] text-[#0047cc] focus:ring-[#0047cc] cursor-pointer shrink-0"
                 />
                 <label htmlFor="consent-financing-lgpd" className="text-[11px] text-slate-400 cursor-pointer select-none leading-relaxed">
                   Concordo com o tratamento dos meus dados para fins de simulação e contato comercial pela Modelo Multimarcas JF, nos termos da Lei Geral de Proteção de Dados (LGPD).
@@ -482,7 +482,7 @@ Simulação:
                 <button
                   type="submit"
                   disabled={submitting || !consentLGPD}
-                  className="w-full bg-[#e30613] hover:bg-[#c40510] disabled:opacity-50 text-white font-speed font-bold uppercase tracking-wider py-3 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full bg-gradient-to-r from-[#e0121d] via-[#cc0c16] to-[#b00a13] hover:from-[#c40510] hover:to-[#960007] disabled:opacity-50 text-white font-speed font-bold uppercase tracking-wider py-3 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                   {submitting ? "Enviando Simulação..." : "Falar com Consultor sobre Financiamento"}

@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     locale: "pt_BR",
   },
   icons: {
-    icon: "/images/logo-oficial.jpg",
-    apple: "/images/logo-oficial.jpg",
+    icon: "/images/logo-oficial.png",
+    apple: "/images/logo-oficial.png",
   },
 };
 
@@ -47,6 +47,51 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <link
           href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Chakra+Petch:ital,wght@0,400;0,500;0,600;0,700;1,600;1,700;1,800&family=Inter:wght@400;500;600;700&family=Michroma&display=swap"
           rel="stylesheet"
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "AutoDealer",
+              "name": DEALERSHIP_INFO.name,
+              "image": "https://modelomultimarcasjf.com.br/images/logo-oficial.png",
+              "telephone": DEALERSHIP_INFO.phoneFormatted,
+              "email": DEALERSHIP_INFO.email,
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Av. Barão do Rio Branco, 4200",
+                "addressLocality": "Juiz de Fora",
+                "addressRegion": "MG",
+                "postalCode": "36025-020",
+                "addressCountry": "BR"
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": -21.7642,
+                "longitude": -43.3503
+              },
+              "openingHoursSpecification": [
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                  "opens": "08:30",
+                  "closes": "18:30"
+                },
+                {
+                  "@type": "OpeningHoursSpecification",
+                  "dayOfWeek": "Saturday",
+                  "opens": "08:30",
+                  "closes": "13:00"
+                }
+              ],
+              "priceRange": "$$",
+              "areaServed": {
+                "@type": "AdministrativeArea",
+                "name": "Juiz de Fora e Zona da Mata Mineira"
+              }
+            }),
+          }}
         />
         <script
           dangerouslySetInnerHTML={{
@@ -70,7 +115,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       </head>
       <body
         suppressHydrationWarning
-        className="bg-slate-50 dark:bg-[#06070a] text-slate-900 dark:text-slate-100 antialiased min-h-screen flex flex-col font-sans transition-colors duration-200"
+        className="bg-slate-50 dark:bg-[#06070a] text-slate-900 dark:text-slate-100 antialiased min-h-screen flex flex-col font-sans transition-colors duration-200 overflow-x-hidden w-full max-w-full"
       >
         <ThemeProvider>
           {children}

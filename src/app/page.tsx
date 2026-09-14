@@ -144,7 +144,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col antialiased selection:bg-orange-500 selection:text-white pb-16 md:pb-0">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#06070a] text-slate-900 dark:text-slate-100 flex flex-col antialiased selection:bg-[#0047cc] selection:text-white pb-24 md:pb-0 w-full max-w-full overflow-x-hidden">
       {/* Header */}
       <Header
         favoriteCount={favorites.length}
@@ -159,7 +159,13 @@ export default function HomePage() {
         }}
       />
 
-      {/* Hero Section */}
+      {/* Remotion Virtual Cinema Showroom - 1ª Dobra */}
+      <RemotionShowcaseSection
+        vehicles={vehicles}
+        onSelectVehicle={(v) => setSelectedVehicle(v)}
+      />
+
+      {/* Hero Section & Console de Busca */}
       <Hero
         onSearchSubmit={handleHeroSearchSubmit}
         onOpenAppraisal={() => setAppraisalModalOpen(true)}
@@ -167,12 +173,6 @@ export default function HomePage() {
 
       {/* 21st.dev Infinite Marquee: Montadoras & Parceiros Bancários */}
       <BrandsMarqueeSection />
-
-      {/* Remotion Virtual Cinema Showroom */}
-      <RemotionShowcaseSection
-        vehicles={vehicles}
-        onSelectVehicle={(v) => setSelectedVehicle(v)}
-      />
 
       {/* Inventory Section with Realtime Filtering */}
       <InventorySection

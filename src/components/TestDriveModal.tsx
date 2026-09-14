@@ -143,7 +143,7 @@ export default function TestDriveModal({
             <a
               href={whatsappUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="inline-flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl text-sm shadow-md"
             >
               <WhatsAppIcon className="w-5 h-5 fill-white" />
@@ -333,7 +333,7 @@ export default function TestDriveModal({
               <a
                 href={whatsappUrl}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-2"
               >
                 <WhatsAppIcon className="w-4 h-4 fill-white" />

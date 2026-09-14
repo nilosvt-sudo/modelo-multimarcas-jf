@@ -49,8 +49,8 @@ export default function VehicleCard({
 
   return (
     <SpotlightCard
-      spotlightColor="rgba(227, 6, 19, 0.1)"
-      className="bg-white dark:bg-[#0e1117] rounded-2xl overflow-hidden border border-slate-200/90 dark:border-[#232a38] shadow-sm hover:border-slate-300 dark:hover:border-red-600/50 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group relative"
+      spotlightColor="rgba(0, 71, 204, 0.14)"
+      className="bg-white dark:bg-[#0e1117] rounded-2xl overflow-hidden border border-slate-200/90 dark:border-[#232a38] shadow-sm hover:border-[#0047cc]/40 dark:hover:border-[#0047cc]/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group relative"
       role="article"
       aria-label={`${vehicle.brand} ${vehicle.model}`}
     >
@@ -104,7 +104,7 @@ export default function VehicleCard({
             }}
             className={`p-2 rounded-full backdrop-blur-md transition-all shadow-sm ${
               isCompared
-                ? "bg-[#e30613] text-white"
+                ? "bg-[#0047cc] text-white"
                 : "bg-white/85 dark:bg-[#0e1117]/85 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-[#151821] border border-slate-200 dark:border-[#232a38]"
             }`}
             title="Comparar este veículo"
@@ -145,7 +145,7 @@ export default function VehicleCard({
         {/* Title & Year */}
         <div className="mb-3 cursor-pointer" onClick={() => onSelect(vehicle)}>
           <div className="flex items-baseline justify-between gap-2">
-            <h3 className="font-speed font-bold uppercase text-slate-900 dark:text-white text-base sm:text-lg group-hover:text-[#e30613] transition-colors line-clamp-1 tracking-tight">
+            <h3 className="font-speed font-bold uppercase text-slate-900 dark:text-white text-base sm:text-lg group-hover:text-[#0047cc] dark:group-hover:text-[#3b82f6] transition-colors line-clamp-1 tracking-tight">
               {vehicle.brand} {vehicle.model}
             </h3>
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0 tabular-nums font-speed">

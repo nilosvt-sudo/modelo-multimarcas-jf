@@ -26,7 +26,7 @@ export default function Footer() {
               <a
                 href={DEALERSHIP_INFO.instagram}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="w-8 h-8 rounded-lg bg-[#16181D] border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 flex items-center justify-center transition-colors"
                 aria-label="Instagram"
               >
@@ -35,7 +35,7 @@ export default function Footer() {
               <a
                 href={DEALERSHIP_INFO.facebook}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="w-8 h-8 rounded-lg bg-[#16181D] border border-zinc-800 text-zinc-300 hover:text-white hover:bg-zinc-800 flex items-center justify-center transition-colors"
                 aria-label="Facebook"
               >
@@ -44,7 +44,7 @@ export default function Footer() {
               <a
                 href={generateWhatsAppLink("Olá! Gostaria de falar com a loja.")}
                 target="_blank"
-                rel="noreferrer"
+                rel="noopener noreferrer"
                 className="w-8 h-8 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center transition-colors shadow-sm"
                 aria-label="WhatsApp"
               >
@@ -89,19 +89,19 @@ export default function Footer() {
             </h4>
             <div className="space-y-2.5 text-zinc-400 text-xs">
               <p className="flex items-start gap-2 leading-relaxed">
-                <MapPin className="w-4 h-4 text-[#e30613] shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-[#0047cc] dark:text-[#3b82f6] shrink-0 mt-0.5" />
                 <span>{DEALERSHIP_INFO.address}, Juiz de Fora - MG</span>
               </p>
               <p className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[#e30613] shrink-0" />
+                <Phone className="w-4 h-4 text-[#e0121d] shrink-0" />
                 <span>{DEALERSHIP_INFO.phone} (WhatsApp e Atendimento)</span>
               </p>
               <p className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-[#e30613] shrink-0" />
+                <Mail className="w-4 h-4 text-[#0047cc] dark:text-[#3b82f6] shrink-0" />
                 <span>{DEALERSHIP_INFO.email}</span>
               </p>
               <p className="flex items-start gap-2 pt-1 leading-relaxed">
-                <Clock className="w-4 h-4 text-[#e30613] shrink-0 mt-0.5" />
+                <Clock className="w-4 h-4 text-[#e0121d] shrink-0 mt-0.5" />
                 <span>
                   Seg a Sex: 08:30 às 18:30<br />
                   Sábado: 08:30 às 13:00

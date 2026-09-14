@@ -107,35 +107,33 @@ export default function RemotionShowcaseSection({
   if (showcaseVehicles.length === 0) return null;
 
   return (
-    <section className="py-14 sm:py-18 bg-[#F8FAFC] text-slate-900 border-b border-slate-200">
-      <div className="max-w-[1680px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-          <div>
-            <div className="inline-flex items-center gap-2 text-xs font-speed font-bold uppercase tracking-widest text-[#e30613] mb-1.5">
+    <section className="py-3 bg-[#F8FAFC] dark:bg-[#06070a] text-slate-900 dark:text-slate-100 border-b border-slate-200 dark:border-[#232a38] transition-colors duration-200 w-full max-w-full overflow-hidden">
+      <div className="max-w-[1680px] mx-auto px-2 sm:px-4 md:px-6 lg:px-8 w-full max-w-full">
+        {/* Section Header Compacto */}
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="inline-flex items-center gap-1.5 text-xs font-speed font-bold uppercase tracking-widest text-[#e30613]">
               <Film className="w-3.5 h-3.5" />
-              <span>{"// CINE SHOWROOM VIRTUAL • TECNOLOGIA REMOTION"}</span>
+              <span>{"// CINE SHOWROOM VIRTUAL"}</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-zinc-900 tracking-tight uppercase italic font-speed">
+            <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
+            <h2 className="text-sm sm:text-base md:text-lg font-black text-zinc-900 dark:text-white tracking-tight uppercase italic font-speed">
               Seminovos em Movimento
             </h2>
-            <p className="text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
-              Experimente nosso tour em vídeo programático de alta definição. Assista à apresentação dos destaques selecionados ou selecione qualquer veículo abaixo.
-            </p>
           </div>
 
           {/* Realtime Live Engine Tag */}
-          <div className="flex items-center gap-2">
-            <span className="bg-white border border-slate-200 text-slate-800 text-xs font-speed font-bold uppercase tracking-wider px-3.5 py-2 rounded-xl shadow-sm flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping" />
-              Remotion Video Player Ativo
+          <div className="hidden sm:flex items-center gap-1.5 shrink-0">
+            <span className="bg-white dark:bg-[#0e1117] border border-slate-200 dark:border-[#232a38] text-slate-700 dark:text-slate-300 text-xs font-speed font-bold uppercase tracking-wider px-2.5 py-0.5 rounded shadow-xs flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
+              Remotion Video Player
             </span>
           </div>
         </div>
 
-        {/* Video Player Display Container */}
-        <div className="bg-white rounded-3xl p-4 sm:p-6 lg:p-7 border border-slate-200 shadow-xl overflow-hidden">
-          <div className="relative rounded-2xl overflow-hidden bg-slate-950 shadow-2xl aspect-[16/9] w-full max-h-[640px]">
+        {/* Video Player Display Container - Full Width & Immersive */}
+        <div className="bg-white dark:bg-[#0e1117] rounded-xl sm:rounded-2xl p-1.5 sm:p-2.5 border border-slate-200/90 dark:border-[#232a38] shadow-xl overflow-hidden w-full max-w-none transition-colors duration-200">
+          <div className="relative rounded-lg sm:rounded-xl overflow-hidden bg-slate-950 shadow-lg aspect-video w-full max-w-none">
             <Player
               ref={playerRef}
               component={CarShowcaseComposition}
@@ -145,11 +143,13 @@ export default function RemotionShowcaseSection({
               }}
               durationInFrames={totalFrames}
               fps={FPS}
-              compositionWidth={1280}
-              compositionHeight={720}
+              compositionWidth={1920}
+              compositionHeight={1080}
+              className="w-full h-full aspect-video object-cover"
               style={{
                 width: "100%",
                 height: "100%",
+                objectFit: "cover",
               }}
               autoPlay={true}
               loop={true}
@@ -157,24 +157,24 @@ export default function RemotionShowcaseSection({
             />
 
             {/* Float Overlay Play/Pause Button */}
-            <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+            <div className="absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-20 flex items-center gap-2">
               <button
                 type="button"
                 onClick={handleTogglePlay}
-                className="w-10 h-10 rounded-full bg-black/60 hover:bg-black/85 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all cursor-pointer shadow-lg"
+                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/85 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all cursor-pointer shadow-md"
                 title={isPlaying ? "Pausar vídeo" : "Reproduzir vídeo"}
                 aria-label={isPlaying ? "Pausar vídeo" : "Reproduzir vídeo"}
               >
-                {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+                {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
               </button>
             </div>
           </div>
 
           {/* Interactive Navigation Thumbnails & Actions */}
-          <div className="mt-5 pt-4 border-t border-slate-100 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+          <div className="mt-2 pt-2 border-t border-slate-100 dark:border-[#232a38] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2">
             {/* Cars Selector Pills */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 font-speed shrink-0 mr-1">
+            <div className="flex overflow-x-auto gap-1.5 no-scrollbar w-full py-0.5 items-center">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-speed shrink-0 mr-1">
                 Pular para:
               </span>
               {showcaseVehicles.map((car, idx) => (
@@ -182,39 +182,39 @@ export default function RemotionShowcaseSection({
                   key={car.id}
                   type="button"
                   onClick={() => handleJumpToCar(idx)}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-speed font-bold uppercase tracking-wider transition-all shrink-0 cursor-pointer flex items-center gap-2 border ${
+                  className={`px-2.5 py-1 rounded text-xs font-speed font-bold uppercase tracking-wider transition-all shrink-0 cursor-pointer flex items-center gap-1.5 border ${
                     currentCarIndex === idx
-                      ? "bg-[#e30613] text-white border-[#e30613] shadow-md shadow-red-600/25"
-                      : "bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200"
+                      ? "bg-[#e30613] text-white border-[#e30613] shadow-xs"
+                      : "bg-slate-100 dark:bg-[#151821] hover:bg-slate-200 dark:hover:bg-[#1f2430] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-[#232a38]"
                   }`}
                 >
-                  <CarFront className="w-3.5 h-3.5" />
-                  <span>{car.brand} {car.model}</span>
+                  <CarFront className="w-3 h-3 shrink-0" />
+                  <span className="whitespace-nowrap">{car.brand} {car.model}</span>
                 </button>
               ))}
             </div>
 
             {/* Quick Action for Currently Displayed Car */}
             {activeVehicle && (
-              <div className="flex items-center gap-2 shrink-0">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0 pt-1 lg:pt-0">
                 {originalVehicle && (
                   <button
                     type="button"
                     onClick={() => onSelectVehicle(originalVehicle)}
-                    className="bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 font-speed font-bold uppercase tracking-wider text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all cursor-pointer flex items-center gap-1.5 shadow-sm"
+                    className="w-full sm:w-auto justify-center bg-slate-100 dark:bg-[#151821] hover:bg-slate-200 dark:hover:bg-[#1f2430] text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-[#232a38] font-speed font-bold uppercase tracking-wider text-xs px-3 py-1 rounded transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
                   >
                     <span>Ver Ficha Completa</span>
-                    <ArrowUpRight className="w-3.5 h-3.5" />
+                    <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
                   </button>
                 )}
 
                 <a
                   href={activeWhatsappUrl}
                   target="_blank"
-                  rel="noreferrer"
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 shadow-sm"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto justify-center bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-3 py-1 rounded transition-all flex items-center gap-1.5 shadow-xs whitespace-nowrap text-center"
                 >
-                  <WhatsAppIcon className="w-4 h-4 fill-white" />
+                  <WhatsAppIcon className="w-3.5 h-3.5 fill-white shrink-0" />
                   <span>Quero este {activeVehicle.model}</span>
                 </a>
               </div>

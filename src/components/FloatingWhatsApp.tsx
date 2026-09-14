@@ -19,12 +19,17 @@ export default function FloatingWhatsApp({
   );
 
   return (
-    <div className="fixed bottom-6 right-4 z-40 flex flex-col items-end">
-      {/* Popover Menu */}
+    <div
+      style={{
+        bottom: "max(1.5rem, calc(1.5rem + env(safe-area-inset-bottom, 0px)))",
+      }}
+      className="fixed right-4 sm:right-6 bottom-6 sm:bottom-8 z-50 flex flex-col items-end box-border pointer-events-auto"
+    >
+      {/* Popover Menu Responsivo */}
       {isOpen && (
-        <div className="mb-3 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 text-slate-900">
+        <div className="mb-3 w-[calc(100vw-32px)] max-w-72 sm:w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 text-slate-900 box-border">
           {/* Header */}
-          <div className="bg-emerald-600 text-white p-4 flex items-center justify-between">
+          <div className="bg-emerald-600 text-white p-3.5 sm:p-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="relative">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
@@ -39,7 +44,7 @@ export default function FloatingWhatsApp({
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="text-white/80 hover:text-white p-1"
+              className="text-white/80 hover:text-white p-1 cursor-pointer"
               aria-label="Fechar"
             >
               <X className="w-4 h-4" />
@@ -55,7 +60,7 @@ export default function FloatingWhatsApp({
             <a
               href={mainWhatsAppUrl}
               target="_blank"
-              rel="noreferrer"
+              rel="noopener noreferrer"
               className="w-full flex items-center gap-2.5 p-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-slate-200/80 hover:border-emerald-300 transition-colors text-slate-800 font-semibold"
             >
               <MessageCircle className="w-4 h-4 text-emerald-600" />
@@ -88,7 +93,7 @@ export default function FloatingWhatsApp({
       {/* Main Floating Trigger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="group relative flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-900/30 hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer"
+        className="group relative flex items-center justify-center w-13 h-13 sm:w-14 sm:h-14 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shadow-xl shadow-emerald-900/30 hover:scale-110 active:scale-95 transition-all duration-200 cursor-pointer"
         aria-label="Atendimento no WhatsApp"
       >
         <span className="absolute -top-1 -right-1 flex h-4 w-4">
@@ -97,9 +102,9 @@ export default function FloatingWhatsApp({
         </span>
 
         {isOpen ? (
-          <X className="w-6 h-6" />
+          <X className="w-5 h-5 sm:w-6 sm:h-6" />
         ) : (
-          <WhatsAppIcon className="w-7 h-7 fill-white" />
+          <WhatsAppIcon className="w-6 h-6 sm:w-7 sm:h-7 fill-white" />
         )}
       </button>
     </div>

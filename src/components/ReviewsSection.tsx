@@ -162,7 +162,7 @@ export default function ReviewsSection() {
     <section id="depoimentos" className="py-16 sm:py-20 bg-[#F8FAFC] dark:bg-[#07090e] text-slate-900 dark:text-zinc-100 scroll-mt-20 border-b border-slate-200 dark:border-zinc-800/80 overflow-hidden transition-colors">
       <div className="max-w-[1680px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16">
         {/* Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-5 mb-8">
           <div>
             <div className="inline-flex items-center gap-2 text-xs font-speed font-bold uppercase tracking-widest text-[#e30613] mb-1.5">
               <span>{"// REPUTAÇÃO E CONFIANÇA EM JUIZ DE FORA"}</span>
@@ -175,7 +175,7 @@ export default function ReviewsSection() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap sm:flex-nowrap items-center justify-between sm:justify-end gap-3 w-full md:w-auto">
             <div className="hidden sm:flex items-center gap-2.5 bg-white dark:bg-[#11141d] border border-slate-200 dark:border-zinc-800 px-4 py-2.5 rounded-xl shadow-sm text-slate-800 dark:text-zinc-200">
               <div className="flex text-[#FBBF24]">
                 {[1, 2, 3, 4, 5].map((i) => (
@@ -191,7 +191,7 @@ export default function ReviewsSection() {
                 setSubmitted(false);
                 setShowModal(true);
               }}
-              className="bg-white dark:bg-[#11141d] hover:bg-slate-50 dark:hover:bg-[#171b26] text-slate-800 dark:text-zinc-200 border border-slate-200 dark:border-zinc-800 font-speed font-bold uppercase tracking-wider text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer shadow-sm"
+              className="w-full sm:w-auto justify-center bg-white dark:bg-[#11141d] hover:bg-slate-50 dark:hover:bg-[#171b26] text-slate-800 dark:text-zinc-200 border border-slate-200 dark:border-zinc-800 font-speed font-bold uppercase tracking-wider text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all flex items-center gap-2 cursor-pointer shadow-sm order-2 sm:order-1"
             >
               <MessageSquarePlus className="w-4 h-4 text-[#e30613]" />
               Deixar Avaliação
@@ -199,7 +199,7 @@ export default function ReviewsSection() {
 
             {/* Carousel Navigation Buttons (Header/Desktop) */}
             {totalItems > itemsPerPage && (
-              <div className="flex items-center gap-2 ml-1">
+              <div className="flex items-center justify-end gap-2 order-1 sm:order-2">
                 <button
                   type="button"
                   onClick={handlePrev}
@@ -295,21 +295,25 @@ export default function ReviewsSection() {
             </div>
           )}
 
-          {/* Dots Pagination */}
+          {/* Dots Pagination com área de toque aumentada para mobile */}
           {totalItems > itemsPerPage && (
-            <div className="flex items-center justify-center gap-2 mt-8">
+            <div className="flex items-center justify-center gap-1 mt-8">
               {Array.from({ length: maxIndex + 1 }).map((_, idx) => (
                 <button
                   key={idx}
                   type="button"
                   onClick={() => setCurrentIndex(idx)}
                   aria-label={`Ir para o slide ${idx + 1}`}
-                  className={`h-2.5 rounded-full transition-all cursor-pointer ${
-                    currentIndex === idx
-                      ? "w-8 bg-[#e30613] shadow-sm"
-                      : "w-2.5 bg-slate-300 dark:bg-zinc-700 hover:bg-slate-400 dark:hover:bg-zinc-600"
-                  }`}
-                />
+                  className="p-2 cursor-pointer flex items-center justify-center"
+                >
+                  <span
+                    className={`block h-2.5 rounded-full transition-all ${
+                      currentIndex === idx
+                        ? "w-8 bg-[#e30613] shadow-sm"
+                        : "w-2.5 bg-slate-300 dark:bg-zinc-700 hover:bg-slate-400 dark:hover:bg-zinc-600"
+                    }`}
+                  />
+                </button>
               ))}
             </div>
           )}
