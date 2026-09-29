@@ -4,15 +4,16 @@ import React, { useState, useEffect } from "react";
 import { Vehicle } from "@/types";
 import { generateWhatsAppLink, DEALERSHIP_INFO } from "@/lib/constants";
 import {
-  CalendarCheck,
-  MapPin,
+  Car,
+  Calendar,
   Clock,
-  CarFront,
   CheckCircle2,
   X,
   Send,
   Building2,
-  Home
+  Home,
+  ShieldCheck,
+  KeyRound
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/SocialIcons";
 
@@ -35,6 +36,7 @@ export default function TestDriveModal({
   const [customerName, setCustomerName] = useState("");
   const [customerPhone, setCustomerPhone] = useState("");
   const [customerEmail, setCustomerEmail] = useState("");
+  const [cnhNumber, setCnhNumber] = useState("");
   const [preferredDate, setPreferredDate] = useState("");
   const [preferredTime, setPreferredTime] = useState("14:00");
   const [locationPreference, setLocationPreference] = useState<"dealership" | "home_delivery">("dealership");
@@ -70,15 +72,15 @@ export default function TestDriveModal({
       const payload = {
         vehicleId: currentVehicleObj ? currentVehicleObj.id : null,
         vehicleName: currentVehicleObj
-          ? `${currentVehicleObj.brand} ${currentVehicleObj.model} (${currentVehicleObj.yearFabrication})`
-          : "Veículo a confirmar",
+          ? `${currentVehicleObj.brand} ${currentVehicleObj.model} ${currentVehicleObj.version}`
+          : "Test Drive Multimarcas Geral",
         customerName,
         customerPhone,
         customerEmail,
         preferredDate,
         preferredTime,
         locationPreference,
-        notes,
+        notes: `Modalidade: ${locationPreference === "dealership" ? "No Showroom Apex (Brooklin - SP)" : "Test Drive Delivery"} | CNH informada: ${cnhNumber || "Não"} | Obs: ${notes}`,
       };
 
       await fetch("/api/test-drives", {
@@ -89,259 +91,255 @@ export default function TestDriveModal({
 
       setSubmitted(true);
     } catch (err) {
-      console.error("Error scheduling test drive:", err);
+      console.error("Erro ao agendar test drive:", err);
+      alert("Ocorreu um erro ao agendar seu test drive. Por favor, envie diretamente pelo WhatsApp.");
     } finally {
       setSubmitting(false);
     }
   };
 
-  const whatsappMessage = `Olá! Gostaria de agendar um Test-Drive na Modelo Multimarcas JF.
-- Carro: ${currentVehicleObj ? `${currentVehicleObj.brand} ${currentVehicleObj.model} (${currentVehicleObj.yearFabrication})` : "A combinar"}
-- Data: ${preferredDate} às ${preferredTime}
-- Local: ${locationPreference === "dealership" ? "Na Loja (Av. Rio Branco, JF)" : "Test Drive VIP em Domicílio (JF)"}
+  const whatsappMessage = `Olá! Gostaria de agendar um Test Drive na Apex Motors:
 - Nome: ${customerName || "Cliente"}
-- Telefone: ${customerPhone}`;
+- WhatsApp: ${customerPhone}
+- Veículo Escolhido: ${currentVehicleObj ? `${currentVehicleObj.brand} ${currentVehicleObj.model}` : "Sem preferência ainda"}
+- Data: ${preferredDate} às ${preferredTime}
+- Local: ${locationPreference === "dealership" ? "Showroom Apex Motors (Av. das Nações Unidas, SP)" : "Test Drive Delivery no meu endereço"}
+${notes ? `- Detalhes: ${notes}` : ""}`;
 
   const whatsappUrl = generateWhatsAppLink(whatsappMessage);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6">
-      <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={onClose} />
-
-      <div className="relative bg-white dark:bg-[#0e1118] rounded-3xl shadow-2xl max-w-xl w-full max-h-[92vh] overflow-y-auto z-10 border border-slate-200 dark:border-zinc-800 p-6 sm:p-8 text-slate-900 dark:text-zinc-100 transition-colors">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md overflow-y-auto"
+      onClick={onClose}
+    >
+      <div
+        className="relative bg-white dark:bg-[#10131a] w-full max-w-2xl rounded-3xl shadow-2xl border border-slate-200 dark:border-[#232a38] overflow-hidden my-auto animate-in fade-in zoom-in-95 duration-200"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
-        <div className="flex items-center justify-between mb-6 border-b border-slate-100 dark:border-zinc-800 pb-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/40 text-[#e30613] flex items-center justify-center">
-              <CalendarCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white font-speed">Agendar Test-Drive</h2>
-              <p className="text-xs text-slate-500 dark:text-zinc-400">
-                Experimente o carro na prática em Juiz de Fora
-              </p>
-            </div>
-          </div>
-
+        <div className="bg-gradient-to-r from-blue-950 via-slate-900 to-blue-900 p-6 text-white relative">
           <button
+            type="button"
             onClick={onClose}
-            className="w-9 h-9 rounded-full bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+            className="absolute top-4 right-4 p-2 text-white/80 hover:text-white rounded-full hover:bg-white/20 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 backdrop-blur-md text-xs font-semibold uppercase tracking-wider text-blue-300 mb-2">
+            <KeyRound className="w-3.5 h-3.5" />
+            <span>Experiência ao Volante</span>
+          </div>
+          <h3 className="text-xl sm:text-2xl font-black text-white">
+            Agende seu Test Drive VIP
+          </h3>
+          <p className="text-slate-300 text-xs sm:text-sm mt-1">
+            Sinta o prazer de dirigir seu próximo carro antes de fechar o negócio.
+          </p>
         </div>
 
-        {submitted ? (
-          <div className="text-center py-8 space-y-4">
-            <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto">
-              <CheckCircle2 className="w-8 h-8" />
-            </div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-white font-speed uppercase">Test-Drive Solicitado!</h3>
-            <p className="text-xs text-slate-600 dark:text-zinc-400 leading-relaxed">
-              Recebemos seu pedido de agendamento para o <strong className="text-slate-900 dark:text-white">{currentVehicleObj?.brand} {currentVehicleObj?.model}</strong> no dia <strong className="text-slate-900 dark:text-white">{preferredDate}</strong> às <strong className="text-slate-900 dark:text-white">{preferredTime}</strong>. Nossa equipe vai confirmar o horário pelo WhatsApp.
-            </p>
-            <a
-              href={whatsappUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl text-sm shadow-md"
-            >
-              <WhatsAppIcon className="w-5 h-5 fill-white" />
-              Confirmar Imediatamente no WhatsApp
-            </a>
-            <button
-              onClick={onClose}
-              className="text-xs text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white hover:underline block mx-auto cursor-pointer"
-            >
-              Fechar
-            </button>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-speed uppercase tracking-wider">
-                Veículo Escolhido *
-              </label>
-              <select
-                required
-                value={vehicleId}
-                onChange={(e) => setVehicleId(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-[#161a24] border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-white rounded-xl px-3 py-2.5 text-xs font-medium focus:outline-none focus:border-[#e30613] transition-colors"
-              >
-                <option value="" className="bg-white dark:bg-[#161a24]">Selecione um veículo do estoque</option>
-                {vehicles.map((v) => (
-                  <option key={v.id} value={v.id} className="bg-white dark:bg-[#161a24]">
-                    {v.brand} {v.model} {v.version} ({v.yearFabrication})
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-speed uppercase tracking-wider">
-                  Data Preferida *
-                </label>
-                <input
-                  type="date"
-                  required
-                  min={getTomorrowDateString()}
-                  value={preferredDate}
-                  onChange={(e) => setPreferredDate(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#161a24] border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-[#e30613] transition-colors"
-                />
+        {/* Content */}
+        <div className="p-6">
+          {submitted ? (
+            <div className="text-center py-8 space-y-4">
+              <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto">
+                <CheckCircle2 className="w-10 h-10" />
               </div>
-
+              <h4 className="text-2xl font-bold text-slate-900 dark:text-white">
+                Test Drive Agendado!
+              </h4>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto">
+                Nossa equipe de consultores da Apex Motors entrará em contato para confirmar a disponibilidade do veículo e preparar tudo para sua chegada.
+              </p>
+              <div className="pt-2 flex flex-col sm:flex-row gap-2 justify-center">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm px-5 py-3 rounded-xl shadow-md transition-all"
+                >
+                  <WhatsAppIcon className="w-4 h-4 fill-white" />
+                  <span>Confirmar pelo WhatsApp</span>
+                </a>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-5 py-3 bg-slate-100 dark:bg-[#1a1d24] text-slate-700 dark:text-slate-300 text-xs sm:text-sm font-semibold rounded-xl hover:bg-slate-200"
+                >
+                  Fechar
+                </button>
+              </div>
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Veículo Selecionado */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-speed uppercase tracking-wider">
-                  Horário Preferido *
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Selecione o Veículo do Estoque
                 </label>
                 <select
-                  value={preferredTime}
-                  onChange={(e) => setPreferredTime(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#161a24] border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-white rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-[#e30613] transition-colors"
+                  value={vehicleId}
+                  onChange={(e) => setVehicleId(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-[#161a22] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl px-3 h-10 text-xs sm:text-sm font-semibold focus:outline-none focus:border-blue-500"
                 >
-                  <option value="09:00" className="bg-white dark:bg-[#161a24]">09:00 (Manhã)</option>
-                  <option value="10:30" className="bg-white dark:bg-[#161a24]">10:30 (Manhã)</option>
-                  <option value="14:00" className="bg-white dark:bg-[#161a24]">14:00 (Tarde)</option>
-                  <option value="15:30" className="bg-white dark:bg-[#161a24]">15:30 (Tarde)</option>
-                  <option value="17:00" className="bg-white dark:bg-[#161a24]">17:00 (Final da tarde)</option>
+                  <option value="">Gostaria de ver o estoque completo ao chegar</option>
+                  {vehicles.map((v) => (
+                    <option key={v.id} value={v.id}>
+                      {v.brand} {v.model} {v.version} ({v.yearFabrication}/{v.yearModel})
+                    </option>
+                  ))}
                 </select>
               </div>
-            </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1.5 font-speed uppercase tracking-wider">
-                Local do Test-Drive
-              </label>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setLocationPreference("dealership")}
-                  className={`p-2.5 rounded-xl border text-xs font-semibold text-left flex items-center gap-2 cursor-pointer transition-colors ${
-                    locationPreference === "dealership"
-                      ? "bg-[#e30613] text-white border-[#e30613] shadow-sm"
-                      : "bg-slate-50 dark:bg-[#161a24] text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-700 hover:border-slate-300 dark:hover:border-zinc-600"
-                  }`}
-                >
-                  <Building2 className="w-4 h-4 text-white" />
-                  <div>
-                    <span className="block font-bold">Na Loja JF</span>
-                    <span className="text-[10px] opacity-85">Av. Rio Branco</span>
-                  </div>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => setLocationPreference("home_delivery")}
-                  className={`p-2.5 rounded-xl border text-xs font-semibold text-left flex items-center gap-2 cursor-pointer transition-colors ${
-                    locationPreference === "home_delivery"
-                      ? "bg-[#e30613] text-white border-[#e30613] shadow-sm"
-                      : "bg-slate-50 dark:bg-[#161a24] text-slate-700 dark:text-zinc-300 border-slate-200 dark:border-zinc-700 hover:border-slate-300 dark:hover:border-zinc-600"
-                  }`}
-                >
-                  <Home className="w-4 h-4 text-white" />
-                  <div>
-                    <span className="block font-bold">Em Domicílio</span>
-                    <span className="text-[10px] opacity-85">Levamos até você</span>
-                  </div>
-                </button>
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-speed uppercase tracking-wider">
-                Seu Nome Completo *
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="Ex: Mariana Castro"
-                value={customerName}
-                onChange={(e) => setCustomerName(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-[#161a24] border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-[#e30613] transition-colors"
-              />
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
+              {/* Modalidade (Showroom ou Delivery) */}
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-speed uppercase tracking-wider">
-                  WhatsApp *
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+                  Onde você prefere realizar o Test Drive?
+                </label>
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setLocationPreference("dealership")}
+                    className={`p-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                      locationPreference === "dealership"
+                        ? "bg-blue-50 dark:bg-blue-950/40 border-blue-600 text-blue-900 dark:text-blue-200 shadow-sm"
+                        : "bg-slate-50 dark:bg-[#161a22] border-slate-200 dark:border-[#232a38] text-slate-700 dark:text-slate-300"
+                    }`}
+                  >
+                    <Building2 className="w-4 h-4 text-blue-600" />
+                    <span>Showroom Apex (Brooklin - SP)</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => setLocationPreference("home_delivery")}
+                    className={`p-3 rounded-xl border text-xs font-bold flex items-center justify-center gap-2 cursor-pointer transition-all ${
+                      locationPreference === "home_delivery"
+                        ? "bg-blue-50 dark:bg-blue-950/40 border-blue-600 text-blue-900 dark:text-blue-200 shadow-sm"
+                        : "bg-slate-50 dark:bg-[#161a22] border-slate-200 dark:border-[#232a38] text-slate-700 dark:text-slate-300"
+                    }`}
+                  >
+                    <Home className="w-4 h-4 text-blue-600" />
+                    <span>Test Drive VIP em Casa/Trabalho</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Nome e Telefone */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Nome Completo *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Seu nome"
+                    value={customerName}
+                    onChange={(e) => setCustomerName(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-[#161a22] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl px-3.5 h-10 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    WhatsApp com DDD *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="(11) 99999-9999"
+                    value={customerPhone}
+                    onChange={(e) => setCustomerPhone(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-[#161a22] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl px-3.5 h-10 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+              </div>
+
+              {/* Data e Horário */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Data de Preferência *
+                  </label>
+                  <input
+                    type="date"
+                    required
+                    min={getTomorrowDateString()}
+                    value={preferredDate}
+                    onChange={(e) => setPreferredDate(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-[#161a22] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl px-3 h-10 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Horário de Preferência *
+                  </label>
+                  <select
+                    value={preferredTime}
+                    onChange={(e) => setPreferredTime(e.target.value)}
+                    className="w-full bg-slate-50 dark:bg-[#161a22] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl px-3 h-10 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
+                  >
+                    <option value="09:00">Manhã (09:00 - 11:00)</option>
+                    <option value="11:30">Manhã (11:30 - 13:00)</option>
+                    <option value="14:00">Tarde (14:00 - 16:00)</option>
+                    <option value="16:30">Tarde (16:30 - 18:00)</option>
+                    <option value="Sabado_Manha">Sábado (09:00 - 13:00)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Observações adicionais (opcional)
                 </label>
                 <input
-                  type="tel"
+                  type="text"
+                  placeholder="Ex: Vou levar meu mecânico de confiança / Quero simular parcelas na visita..."
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="w-full bg-slate-50 dark:bg-[#161a22] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl px-3.5 h-10 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div className="flex items-start gap-2 pt-1">
+                <input
+                  type="checkbox"
+                  id="lgpd_testdrive"
                   required
-                  placeholder="(32) 99999-9999"
-                  value={customerPhone}
-                  onChange={(e) => setCustomerPhone(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#161a24] border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-[#e30613] transition-colors"
+                  checked={consentLGPD}
+                  onChange={(e) => setConsentLGPD(e.target.checked)}
+                  className="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                 />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-speed uppercase tracking-wider">
-                  E-mail (Opcional)
+                <label htmlFor="lgpd_testdrive" className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Possuo CNH válida e autorizo a Apex Motors a entrar em contato para confirmar meu agendamento.
                 </label>
-                <input
-                  type="email"
-                  placeholder="email@exemplo.com"
-                  value={customerEmail}
-                  onChange={(e) => setCustomerEmail(e.target.value)}
-                  className="w-full bg-slate-50 dark:bg-[#161a24] border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-[#e30613] transition-colors"
-                />
               </div>
-            </div>
 
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-zinc-300 mb-1 font-speed uppercase tracking-wider">
-                Observações ou endereço para teste em domicílio
-              </label>
-              <textarea
-                rows={2}
-                placeholder="Ex: Gostaria de testar subidas no bairro São Mateus..."
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className="w-full bg-slate-50 dark:bg-[#161a24] border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-zinc-500 rounded-xl px-3 py-2.5 text-xs focus:outline-none focus:border-[#e30613] transition-colors resize-none"
-              />
-            </div>
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                <button
+                  type="submit"
+                  disabled={submitting || !consentLGPD}
+                  className="flex-1 py-3.5 bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-blue-700/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  <Send className="w-4 h-4" />
+                  <span>{submitting ? "Enviando Agendamento..." : "Confirmar Agendamento VIP"}</span>
+                </button>
 
-            {/* LGPD Consent Checkbox */}
-            <div className="flex items-start gap-2.5 pt-1">
-              <input
-                id="consent-testdrive-lgpd"
-                type="checkbox"
-                required
-                checked={consentLGPD}
-                onChange={(e) => setConsentLGPD(e.target.checked)}
-                className="mt-0.5 w-4 h-4 rounded bg-white dark:bg-[#161a24] border-slate-300 dark:border-zinc-700 text-[#e30613] focus:ring-[#e30613] cursor-pointer shrink-0"
-              />
-              <label htmlFor="consent-testdrive-lgpd" className="text-[11px] text-slate-500 dark:text-zinc-400 cursor-pointer select-none leading-relaxed">
-                Concordo com o tratamento dos meus dados para agendamento de test-drive e contato comercial pela Modelo Multimarcas JF, nos termos da Lei Geral de Proteção de Dados (LGPD).
-              </label>
-            </div>
-
-            <div className="pt-2 space-y-2">
-              <button
-                type="submit"
-                disabled={submitting || !consentLGPD}
-                className="w-full bg-[#e30613] hover:bg-[#c40510] disabled:opacity-50 text-white font-speed font-bold uppercase tracking-wider py-3 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <Send className="w-4 h-4" />
-                {submitting ? "Confirmando..." : "Confirmar Agendamento de Test-Drive"}
-              </button>
-
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-2"
-              >
-                <WhatsAppIcon className="w-4 h-4 fill-white" />
-                Agendar Imediatamente via WhatsApp
-              </a>
-            </div>
-          </form>
-        )}
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-3.5 px-5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <WhatsAppIcon className="w-4 h-4 fill-white" />
+                  <span>Agendar no WhatsApp</span>
+                </a>
+              </div>
+            </form>
+          )}
+        </div>
       </div>
     </div>
   );

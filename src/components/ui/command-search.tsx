@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from "react";
-import { Search, X, Car, ArrowRight, ShieldCheck } from "lucide-react";
+import { Search, X, Sparkles, ArrowRight, ShieldCheck } from "lucide-react";
 import { formatCurrency } from "@/lib/constants";
 import { Vehicle } from "@/types";
 
@@ -40,8 +40,6 @@ export function CommandSearch({
         e.preventDefault();
         if (isOpen) {
           onClose();
-        } else {
-          // Open handled externally if listener is attached, but let's toggle if needed
         }
       }
       if (e.key === "Escape" && isOpen) {
@@ -63,10 +61,9 @@ export function CommandSearch({
           v.brand.toLowerCase().includes(query) ||
           v.model.toLowerCase().includes(query) ||
           v.version.toLowerCase().includes(query) ||
-          v.yearModel.toString().includes(query) ||
-          v.yearFabrication.toString().includes(query) ||
-          v.transmission.toLowerCase().includes(query) ||
-          v.bodyType.toLowerCase().includes(query)
+          v.color.toLowerCase().includes(query) ||
+          v.bodyType.toLowerCase().includes(query) ||
+          v.description.toLowerCase().includes(query)
         );
       });
 
@@ -79,16 +76,16 @@ export function CommandSearch({
       />
 
       {/* Palette Container */}
-      <div className="relative w-full max-w-2xl bg-white dark:bg-[#0e1118] rounded-2xl shadow-2xl border border-slate-200 dark:border-zinc-800 overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-150 text-slate-900 dark:text-zinc-100 transition-colors">
+      <div className="relative w-full max-w-2xl bg-white dark:bg-[#10131a] rounded-3xl shadow-2xl border border-amber-200/80 dark:border-zinc-800 overflow-hidden z-10 animate-in fade-in zoom-in-95 duration-150 text-slate-900 dark:text-zinc-100 transition-colors">
         {/* Search Input Bar */}
-        <div className="flex items-center px-4 py-3.5 border-b border-slate-100 dark:border-zinc-800 gap-3">
-          <Search className="w-5 h-5 text-slate-400 dark:text-zinc-500 shrink-0" />
+        <div className="flex items-center px-4 py-3.5 border-b border-amber-100 dark:border-zinc-800 gap-3">
+          <Search className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
           <input
             ref={inputRef}
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar por marca, modelo, câmbio ou ano... (ex: Corolla, Tracker, Automático)"
+            placeholder="Buscar por tratamento, tecnologia ou queixa... (ex: Botox, Sculptra, Melasma, Lavieen)"
             className="w-full bg-transparent border-none text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 text-sm focus:outline-none"
           />
           {searchQuery && (
@@ -99,30 +96,31 @@ export function CommandSearch({
               <X className="w-4 h-4" />
             </button>
           )}
-          <span className="hidden sm:inline-block text-[10px] font-semibold text-slate-400 dark:text-zinc-400 bg-slate-100 dark:bg-zinc-800 px-2 py-0.5 rounded-md border border-slate-200 dark:border-zinc-700">
+          <kbd className="hidden sm:inline-block px-2 py-0.5 text-[10px] uppercase font-bold text-slate-400 bg-slate-100 dark:bg-zinc-800 rounded border border-slate-200 dark:border-zinc-700">
             ESC
-          </span>
+          </kbd>
         </div>
 
         {/* Results List */}
-        <div className="max-h-[60vh] overflow-y-auto p-2 divide-y divide-slate-100 dark:divide-zinc-800/80">
+        <div className="max-h-96 overflow-y-auto p-2 space-y-1">
           {filteredVehicles.length === 0 ? (
-            <div className="p-8 text-center text-slate-500 dark:text-zinc-400 text-xs">
-              <Car className="w-8 h-8 mx-auto text-slate-300 dark:text-zinc-700 mb-2" />
-              Nenhum veículo encontrado para &ldquo;{searchQuery}&rdquo;.
+            <div className="text-center py-10 text-slate-400">
+              <Sparkles className="w-8 h-8 text-amber-500 mx-auto mb-2 opacity-50" />
+              <p className="text-sm font-serif">Nenhum procedimento encontrado com esse termo.</p>
+              <p className="text-xs text-slate-400 mt-0.5">Tente buscar por "facial", "laser" ou "botox".</p>
             </div>
           ) : (
             filteredVehicles.map((vehicle) => (
-              <div
+              <button
                 key={vehicle.id}
                 onClick={() => {
                   onSelectVehicle(vehicle);
                   onClose();
                 }}
-                className="group flex items-center justify-between p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-[#161a24] transition-colors cursor-pointer"
+                className="w-full text-left p-3 rounded-2xl hover:bg-amber-50/70 dark:hover:bg-[#161a22] flex items-center justify-between group transition-colors cursor-pointer"
               >
                 <div className="flex items-center gap-3 min-w-0">
-                  <div className="w-16 h-12 rounded-lg bg-slate-100 dark:bg-zinc-800 overflow-hidden shrink-0 border border-slate-200 dark:border-zinc-700">
+                  <div className="w-14 h-11 rounded-xl overflow-hidden bg-slate-100 dark:bg-zinc-800 shrink-0">
                     <img
                       src={vehicle.coverImage}
                       alt={vehicle.model}
@@ -130,47 +128,40 @@ export function CommandSearch({
                     />
                   </div>
                   <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="font-bold text-sm text-slate-900 dark:text-white group-hover:text-[#e30613] dark:group-hover:text-[#e30613] transition-colors truncate font-speed">
-                        {vehicle.brand} {vehicle.model}
-                      </span>
-                      <span className="text-[11px] text-slate-500 dark:text-zinc-400 font-medium shrink-0">
-                        {vehicle.yearFabrication}/{vehicle.yearModel}
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-[10px] font-bold uppercase text-amber-700 dark:text-amber-400">
+                        {vehicle.brand}
                       </span>
                     </div>
-                    <div className="flex items-center gap-2 text-[11px] text-slate-500 dark:text-zinc-400 mt-0.5">
-                      <span>{vehicle.transmission}</span>
-                      <span>•</span>
-                      <span>{vehicle.mileage.toLocaleString("pt-BR")} km</span>
-                      <span>•</span>
-                      <span className="flex items-center gap-0.5 text-emerald-600 dark:text-emerald-400 font-medium">
-                        <ShieldCheck className="w-3 h-3" />
-                        Periciado
-                      </span>
-                    </div>
+                    <h4 className="text-sm font-serif font-bold text-slate-900 dark:text-white truncate">
+                      {vehicle.model}
+                    </h4>
+                    <span className="text-xs text-slate-500 truncate block">
+                      {vehicle.version} • {vehicle.color}
+                    </span>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 shrink-0 pl-3 text-right">
+                <div className="text-right shrink-0 flex items-center gap-2 pl-3">
                   <div>
-                    <span className="block font-black text-sm text-slate-900 dark:text-white tabular-nums font-speed">
+                    <span className="text-xs font-bold font-serif text-slate-900 dark:text-white block">
                       {formatCurrency(vehicle.price)}
                     </span>
-                    <span className="block text-[10px] text-slate-400 dark:text-zinc-500">À vista / Troca</span>
+                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400">
+                      {vehicle.bodyType}
+                    </span>
                   </div>
-                  <ArrowRight className="w-4 h-4 text-slate-400 dark:text-zinc-500 group-hover:text-[#e30613] dark:group-hover:text-[#e30613] group-hover:translate-x-0.5 transition-all" />
+                  <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-amber-600 group-hover:translate-x-0.5 transition-all" />
                 </div>
-              </div>
+              </button>
             ))
           )}
         </div>
 
-        {/* Footer info */}
-        <div className="px-4 py-2.5 bg-slate-50 dark:bg-[#080a0f] border-t border-slate-100 dark:border-zinc-800 flex items-center justify-between text-[11px] text-slate-500 dark:text-zinc-400">
-          <span>{filteredVehicles.length} veículos em destaque</span>
-          <div className="flex items-center gap-2">
-            <span>Dica: Use <strong>↑ ↓</strong> para navegar</span>
-          </div>
+        {/* Footer shortcuts */}
+        <div className="px-4 py-2 bg-slate-50 dark:bg-[#0c0e14] border-t border-amber-100 dark:border-zinc-800 flex items-center justify-between text-[11px] text-slate-500">
+          <span>Dica: Use <strong>Ctrl+K</strong> em qualquer momento para abrir esta busca</span>
+          <span className="font-semibold text-amber-700 dark:text-amber-400">Lumina Derma Instituto</span>
         </div>
       </div>
     </div>

@@ -23,15 +23,15 @@ export const CarSlide: React.FC<CarSlideProps> = ({
   const frame = useCurrentFrame();
   const { fps, durationInFrames } = useVideoConfig();
 
-  // Ken Burns zoom effect (smooth, cinematic camera zoom without edge revealing)
-  const imageScale = interpolate(frame, [0, durationInFrames], [1.05, 1.16], {
+  // Ken Burns zoom effect
+  const imageScale = interpolate(frame, [0, durationInFrames], [1.05, 1.15], {
     extrapolateRight: "clamp",
   });
-  const imageTranslateY = interpolate(frame, [0, durationInFrames], [0, -10], {
+  const imageTranslateY = interpolate(frame, [0, durationInFrames], [0, -8], {
     extrapolateRight: "clamp",
   });
 
-  // Entry transitions with spring physics
+  // Entry transitions
   const badgeSpring = spring({
     frame,
     fps,
@@ -50,29 +50,20 @@ export const CarSlide: React.FC<CarSlideProps> = ({
     config: { damping: 14, stiffness: 110 },
   });
 
-  const specsSpring = spring({
-    frame: frame - 16,
-    fps,
-    config: { damping: 16, stiffness: 90 },
-  });
-
-  // Slide progress bar (0% to 100%)
+  // Slide progress bar
   const progressPercent = interpolate(frame, [0, durationInFrames], [0, 100], {
     extrapolateRight: "clamp",
   });
 
-  // Formatting price
   const formattedPrice = new Intl.NumberFormat("pt-BR", {
     style: "currency",
     currency: "BRL",
     maximumFractionDigits: 0,
   }).format(parseFloat(vehicle.price));
 
-  const formattedMileage = new Intl.NumberFormat("pt-BR").format(vehicle.mileage);
-
   return (
     <AbsoluteFill className="overflow-hidden bg-slate-950 font-sans select-none w-full h-full">
-      {/* Background Car Image with Ken Burns motion */}
+      {/* Background Image */}
       <div
         style={{
           transform: `scale(${imageScale}) translateY(${imageTranslateY}px)`,
@@ -93,134 +84,92 @@ export const CarSlide: React.FC<CarSlideProps> = ({
         />
       </div>
 
-      {/* Cinematic Vignette & Gradient Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-black/20" />
-      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/20 to-transparent" />
+      {/* Overlays */}
+      <div className="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-black/30" />
+      <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/30 to-transparent" />
 
-      {/* Top Header Strip: Dealership brand, current car index & Live Showroom pill */}
-      <div className="absolute top-6 left-6 right-6 flex items-center justify-between z-10">
-        <div
-          style={{
-            opacity: badgeSpring,
-            transform: `translateY(${interpolate(badgeSpring, [0, 1], [-20, 0])}px)`,
-          }}
-          className="flex items-center gap-3 bg-black/75 backdrop-blur-md border border-white/20 px-3.5 py-1.5 rounded-xl shadow-lg text-white"
-        >
-          <div className="w-6 h-6 rounded-md bg-white p-0.5 flex items-center justify-center overflow-hidden">
-            <img src="/images/logo-oficial.jpg" alt="Logo Oficial Modelo Multimarcas JF" className="w-full h-full object-contain" />
+      {/* Top Header Strip */}
+      <div className="absolute top-0 inset-x-0 p-5 sm:p-7 flex items-center justify-between z-20">
+        <div className="flex items-center gap-3">
+          <div className="px-3 py-1 rounded-full bg-blue-600 text-white font-black text-xs tracking-wider uppercase backdrop-blur-md">
+            Apex Motors
           </div>
-          <span className="font-speed font-black tracking-wider text-xs uppercase text-white">
-            MODELO MULTIMARCAS JF
-          </span>
-          <span className="w-1.5 h-1.5 rounded-full bg-[#e30613]" />
-          <span className="text-[11px] font-medium text-slate-300">
-            SHOWROOM VIRTUAL
+          <span className="text-white/80 text-xs font-semibold">
+            Destaque {slideIndex + 1} de {totalSlides}
           </span>
         </div>
 
-        <div
-          style={{
-            opacity: badgeSpring,
-            transform: `translateY(${interpolate(badgeSpring, [0, 1], [-20, 0])}px)`,
-          }}
-          className="flex items-center gap-2 bg-black/75 backdrop-blur-md border border-white/20 px-3 py-1 rounded-xl text-xs font-speed font-bold text-white shadow-lg"
-        >
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span>VEÍCULO {slideIndex + 1} DE {totalSlides}</span>
+        <div className="flex items-center gap-2 bg-black/50 backdrop-blur-md px-3 py-1 rounded-full border border-blue-500/30">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+          <span className="text-white text-xs font-bold uppercase tracking-wider">
+            Laudo Cautelar Aprovado
+          </span>
         </div>
       </div>
 
-      {/* Center/Bottom Overlay: Car Information */}
-      <div className="absolute bottom-8 left-6 right-6 z-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
-        {/* Left column: Brand, Model, Version & Quality Badges */}
-        <div className="max-w-2xl space-y-2.5">
-          {/* Badges tag row */}
-          <div
-            style={{
-              opacity: badgeSpring,
-              transform: `scale(${badgeSpring})`,
-            }}
-            className="flex flex-wrap items-center gap-2"
-          >
-            {vehicle.badge && (
-              <span className="bg-[#e30613] text-white text-[10px] font-speed font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow">
-                {vehicle.badge}
-              </span>
-            )}
-            {vehicle.hasInspectionReport && (
-              <span className="bg-emerald-600/90 backdrop-blur-sm text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-md shadow border border-emerald-400/30 flex items-center gap-1">
-                ✓ Laudo Cautelar 100% Aprovado
-              </span>
-            )}
-            <span className="bg-slate-800/90 backdrop-blur-sm text-slate-200 text-[10px] font-medium px-2.5 py-1 rounded-md border border-white/10">
-              Garantia de Procedência
+      {/* Bottom Content Card */}
+      <div className="absolute bottom-0 inset-x-0 p-6 sm:p-10 z-20 flex flex-col justify-end">
+        {/* Category & Badge */}
+        <div
+          style={{
+            opacity: badgeSpring,
+            transform: `translateY(${(1 - badgeSpring) * 15}px)`,
+          }}
+          className="flex items-center gap-2 mb-2"
+        >
+          <span className="bg-blue-600 text-white text-xs font-black px-2.5 py-0.5 rounded-md uppercase tracking-wider">
+            {vehicle.brand}
+          </span>
+          {vehicle.badge && (
+            <span className="bg-white/90 text-slate-900 text-xs font-bold px-2.5 py-0.5 rounded-md uppercase tracking-wider">
+              {vehicle.badge}
             </span>
-          </div>
-
-          {/* Headline Title */}
-          <div
-            style={{
-              opacity: titleSpring,
-              transform: `translateY(${interpolate(titleSpring, [0, 1], [30, 0])}px)`,
-            }}
-          >
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-black uppercase italic font-speed text-white tracking-tight drop-shadow-md">
-              {vehicle.brand} <span className="text-white">{vehicle.model}</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-300 font-medium mt-0.5 line-clamp-1 drop-shadow">
-              {vehicle.version} • {vehicle.yearFabrication}/{vehicle.yearModel}
-            </p>
-          </div>
-
-          {/* Quick Specs Pill Row */}
-          <div
-            style={{
-              opacity: specsSpring,
-              transform: `translateY(${interpolate(specsSpring, [0, 1], [20, 0])}px)`,
-            }}
-            className="flex flex-wrap items-center gap-3 pt-1 text-xs text-slate-300 font-medium"
-          >
-            <div className="bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg border border-white/15">
-              🚀 <strong className="text-white font-speed">{formattedMileage} km</strong>
-            </div>
-            <div className="bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg border border-white/15">
-              ⚙️ <strong className="text-white">{vehicle.transmission}</strong>
-            </div>
-            <div className="bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg border border-white/15">
-              ⛽ <strong className="text-white">{vehicle.fuel}</strong>
-            </div>
-            <div className="bg-black/60 backdrop-blur-md px-3 py-1 rounded-lg border border-white/15">
-              🎨 <strong className="text-white">{vehicle.color}</strong>
-            </div>
-          </div>
+          )}
         </div>
 
-        {/* Right column: Price Card */}
+        {/* Title */}
+        <div
+          style={{
+            opacity: titleSpring,
+            transform: `translateY(${(1 - titleSpring) * 20}px)`,
+          }}
+        >
+          <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-white drop-shadow-md leading-tight">
+            {vehicle.model}
+          </h2>
+          <p className="text-blue-200 text-sm sm:text-lg font-medium mt-1 drop-shadow">
+            {vehicle.version} • {vehicle.color}
+          </p>
+        </div>
+
+        {/* Specs & Pricing */}
         <div
           style={{
             opacity: priceSpring,
-            transform: `scale(${priceSpring})`,
+            transform: `translateY(${(1 - priceSpring) * 20}px)`,
           }}
-          className="bg-black/75 backdrop-blur-md border border-white/20 p-4 rounded-2xl shadow-2xl shrink-0 text-right space-y-1"
+          className="mt-4 flex flex-wrap items-center justify-between gap-4 pt-3 border-t border-white/20"
         >
-          <span className="text-[10px] text-slate-400 font-speed uppercase tracking-wider block">
-            Valor à Vista ou Financiado
-          </span>
-          <div className="text-2xl sm:text-3xl lg:text-4xl font-black text-white font-speed tracking-tight">
-            {formattedPrice}
+          <div className="flex items-center gap-4 text-xs sm:text-sm text-white/90 font-medium">
+            <span>🕹️ {vehicle.transmission}</span>
+            <span>⛽ {vehicle.fuel}</span>
           </div>
-          <div className="text-[11px] text-emerald-400 font-medium">
-            Entrada facilitada + Aceita Troca
+
+          <div className="text-right">
+            <span className="text-xs text-blue-300 block font-semibold uppercase">Valor Promocional</span>
+            <span className="text-xl sm:text-3xl font-black text-white">
+              {formattedPrice}
+            </span>
           </div>
         </div>
-      </div>
 
-      {/* Bottom Progress Bar for this Slide */}
-      <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-white/20 z-20 overflow-hidden">
-        <div
-          style={{ width: `${progressPercent}%` }}
-          className="h-full bg-[#e30613] shadow-[0_0_10px_#e30613]"
-        />
+        {/* Slide Progress Indicator */}
+        <div className="w-full bg-white/20 h-1.5 rounded-full mt-4 overflow-hidden">
+          <div
+            className="h-full bg-blue-500 rounded-full transition-all"
+            style={{ width: `${progressPercent}%` }}
+          />
+        </div>
       </div>
     </AbsoluteFill>
   );

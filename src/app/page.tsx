@@ -8,6 +8,7 @@ import RemotionShowcaseSection from "@/components/RemotionShowcaseSection";
 import InventorySection from "@/components/InventorySection";
 import VehicleModal from "@/components/VehicleModal";
 import AppraisalSection from "@/components/AppraisalSection";
+import FinancingSimulatorSection from "@/components/FinancingSimulatorSection";
 import TestDriveModal from "@/components/TestDriveModal";
 import ComparisonModal from "@/components/ComparisonModal";
 import FavoritesDrawer from "@/components/FavoritesDrawer";
@@ -188,6 +189,9 @@ export default function HomePage() {
         initialSearch={heroSearchTerm}
       />
 
+      {/* Financing Simulator Section (In-Page) */}
+      <FinancingSimulatorSection vehicles={vehicles} />
+
       {/* Trade-In / Appraisal Section (In-Page) */}
       <AppraisalSection vehicles={vehicles} />
 
@@ -206,6 +210,10 @@ export default function HomePage() {
       {/* Floating WhatsApp Action Button */}
       <FloatingWhatsApp
         onOpenAppraisal={() => setAppraisalModalOpen(true)}
+        onOpenTestDrive={() => {
+          setTestDriveTargetCar(null);
+          setTestDriveModalOpen(true);
+        }}
       />
 
       {/* Vehicle Detail Modal */}

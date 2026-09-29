@@ -2,20 +2,22 @@
 
 import React, { useState } from "react";
 import { DEALERSHIP_INFO, generateWhatsAppLink } from "@/lib/constants";
-import { MessageCircle, X, CarFront, Calculator, Scale, Sparkles } from "lucide-react";
+import { MessageCircle, X, Car, Calendar, DollarSign, KeyRound } from "lucide-react";
 import { WhatsAppIcon } from "@/components/SocialIcons";
 
 interface FloatingWhatsAppProps {
   onOpenAppraisal?: () => void;
+  onOpenTestDrive?: () => void;
 }
 
 export default function FloatingWhatsApp({
   onOpenAppraisal,
+  onOpenTestDrive,
 }: FloatingWhatsAppProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const mainWhatsAppUrl = generateWhatsAppLink(
-    "Olá! Estou navegando no site da Modelo Multimarcas JF e gostaria de atendimento."
+    "Olá! Estou no site da Apex Motors e gostaria de falar com um consultor de vendas."
   );
 
   return (
@@ -27,19 +29,19 @@ export default function FloatingWhatsApp({
     >
       {/* Popover Menu Responsivo */}
       {isOpen && (
-        <div className="mb-3 w-[calc(100vw-32px)] max-w-72 sm:w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 text-slate-900 box-border">
+        <div className="mb-3 w-[calc(100vw-32px)] max-w-72 sm:w-72 bg-white dark:bg-[#10131a] rounded-3xl shadow-2xl border border-slate-200 dark:border-[#232a38] overflow-hidden animate-in fade-in slide-in-from-bottom-3 duration-200 text-slate-900 dark:text-white box-border">
           {/* Header */}
-          <div className="bg-emerald-600 text-white p-3.5 sm:p-4 flex items-center justify-between">
+          <div className="bg-gradient-to-r from-blue-950 via-slate-900 to-blue-900 text-white p-3.5 sm:p-4 flex items-center justify-between">
             <div className="flex items-center gap-2.5">
               <div className="relative">
                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                   <WhatsAppIcon className="w-5 h-5 fill-white" />
                 </div>
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-300 border-2 border-emerald-600 rounded-full"></span>
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-slate-900 rounded-full"></span>
               </div>
               <div>
-                <h4 className="font-bold text-xs leading-tight">Modelo Multimarcas JF</h4>
-                <span className="text-[10px] text-emerald-100">Atendimento Online</span>
+                <h4 className="font-black text-xs leading-tight">{DEALERSHIP_INFO.name}</h4>
+                <span className="text-[10px] text-blue-200">Consultores Online</span>
               </div>
             </div>
             <button
@@ -52,38 +54,40 @@ export default function FloatingWhatsApp({
           </div>
 
           {/* Body Options */}
-          <div className="p-3 space-y-1.5 bg-slate-50 text-xs">
-            <p className="text-[11px] text-slate-500 px-1 py-0.5">
-              Como podemos te ajudar agora?
+          <div className="p-3 space-y-1.5 bg-slate-50 dark:bg-[#141720] text-xs">
+            <p className="text-[11px] text-slate-500 dark:text-slate-400 px-1 py-0.5">
+              Como podemos ajudar você hoje?
             </p>
 
             <a
               href={mainWhatsAppUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center gap-2.5 p-2.5 rounded-xl bg-white hover:bg-emerald-50 border border-slate-200/80 hover:border-emerald-300 transition-colors text-slate-800 font-semibold"
+              className="w-full flex items-center gap-2.5 p-2.5 rounded-xl bg-white dark:bg-[#1a1d24] hover:bg-emerald-50 dark:hover:bg-emerald-950/20 border border-slate-200/80 dark:border-[#232a38] hover:border-emerald-300 transition-colors text-slate-800 dark:text-slate-200 font-bold"
             >
               <MessageCircle className="w-4 h-4 text-emerald-600" />
-              <span>Falar com um Consultor</span>
+              <span>Falar com Vendedor</span>
             </a>
 
-            <a
-              href="#estoque"
-              onClick={() => setIsOpen(false)}
-              className="w-full flex items-center gap-2.5 p-2.5 rounded-xl bg-white hover:bg-slate-100 border border-slate-200/80 hover:border-slate-300 transition-colors text-slate-800 font-semibold text-left"
+            <button
+              onClick={() => {
+                setIsOpen(false);
+                onOpenTestDrive?.();
+              }}
+              className="w-full flex items-center gap-2.5 p-2.5 rounded-xl bg-white dark:bg-[#1a1d24] hover:bg-blue-50 dark:hover:bg-blue-950/20 border border-slate-200/80 dark:border-[#232a38] hover:border-blue-300 transition-colors text-slate-800 dark:text-slate-200 font-bold text-left cursor-pointer"
             >
-              <CarFront className="w-4 h-4 text-red-600" />
-              <span>Ver Estoque Completo</span>
-            </a>
+              <KeyRound className="w-4 h-4 text-blue-600" />
+              <span>Agendar Test Drive VIP</span>
+            </button>
 
             <button
               onClick={() => {
                 setIsOpen(false);
                 onOpenAppraisal?.();
               }}
-              className="w-full flex items-center gap-2.5 p-2.5 rounded-xl bg-white hover:bg-orange-50 border border-slate-200/80 hover:border-orange-300 transition-colors text-slate-800 font-semibold text-left cursor-pointer"
+              className="w-full flex items-center gap-2.5 p-2.5 rounded-xl bg-white dark:bg-[#1a1d24] hover:bg-amber-50 dark:hover:bg-amber-950/20 border border-slate-200/80 dark:border-[#232a38] hover:border-amber-300 transition-colors text-slate-800 dark:text-slate-200 font-bold text-left cursor-pointer"
             >
-              <Scale className="w-4 h-4 text-orange-500" />
+              <DollarSign className="w-4 h-4 text-amber-500" />
               <span>Avaliar Meu Carro Usado</span>
             </button>
           </div>
@@ -100,12 +104,7 @@ export default function FloatingWhatsApp({
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
           <span className="relative inline-flex rounded-full h-4 w-4 bg-emerald-400"></span>
         </span>
-
-        {isOpen ? (
-          <X className="w-5 h-5 sm:w-6 sm:h-6" />
-        ) : (
-          <WhatsAppIcon className="w-6 h-6 sm:w-7 sm:h-7 fill-white" />
-        )}
+        <WhatsAppIcon className="w-6 h-6 fill-white" />
       </button>
     </div>
   );

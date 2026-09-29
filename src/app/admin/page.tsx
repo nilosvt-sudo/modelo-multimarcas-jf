@@ -295,7 +295,7 @@ export default function AdminPage() {
       coverImage: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1000&q=80",
       gallery: "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=1000&q=80",
       features: ["Ar-condicionado", "Direção elétrica", "Vidros elétricos", "Travas elétricas"],
-      description: "Veículo seminovo revisado com garantia Modelo Multimarcas JF. Laudo cautelar 100% aprovado.",
+      description: "Veículo seminovo revisado com garantia Apex Motors. Laudo cautelar 100% aprovado.",
       isFeatured: false,
       badge: "Seminovo",
       hasInspectionReport: true,
@@ -890,7 +890,7 @@ export default function AdminPage() {
                         </span>
                         <a
                           href={generateWhatsAppLink(
-                            `Olá ${lead.name}! Recebemos sua simulação para o ${lead.vehicleName} na Modelo Multimarcas JF.`,
+                            `Olá ${lead.name}! Recebemos sua simulação para o ${lead.vehicleName} na Apex Motors.`,
                             lead.phone.replace(/\D/g, "")
                           )}
                           target="_blank"
@@ -1153,7 +1153,7 @@ export default function AdminPage() {
                     <td className="p-3.5 text-right">
                       <a
                         href={generateWhatsAppLink(
-                          `Olá ${lead.name}! Estou entrando em contato da Modelo Multimarcas JF sobre seu interesse no ${lead.vehicleName}.`,
+                          `Olá ${lead.name}! Estou entrando em contato da Apex Motors sobre seu interesse no ${lead.vehicleName}.`,
                           lead.phone.replace(/\D/g, "")
                         )}
                         target="_blank"
@@ -1380,7 +1380,7 @@ export default function AdminPage() {
                 Restaurar Estoque Padrão da Loja
               </h4>
               <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                Esta ação recarrega o catálogo original de 12 veículos com fotos HD, laudos cautelares, depoimentos e dados completos da Modelo Multimarcas JF.
+                Esta ação recarrega o catálogo original de 12 veículos com fotos HD, laudos cautelares, depoimentos e dados completos da Apex Motors.
               </p>
               <button
                 onClick={handleResetDatabase}
@@ -1391,13 +1391,15 @@ export default function AdminPage() {
             </div>
 
             <div className="p-5 rounded-xl bg-slate-50 dark:bg-[#151821] border border-slate-200 dark:border-[#232a38] space-y-2.5 text-xs text-slate-700 dark:text-slate-300">
-              <h4 className="font-bold text-sm text-slate-900 dark:text-white font-speed uppercase tracking-wide">
-                Dados da Loja em Juiz de Fora
+              <h4 className="font-bold text-sm text-slate-900 dark:text-white uppercase tracking-wide">
+                Dados da Concessionária em São Paulo - SP
               </h4>
               <p><strong>Nome:</strong> {DEALERSHIP_INFO.name}</p>
-              <p><strong>WhatsApp:</strong> {DEALERSHIP_INFO.phone}</p>
-              <p><strong>Endereço:</strong> {DEALERSHIP_INFO.address}, Juiz de Fora - MG</p>
-              <p><strong>Horários:</strong> {DEALERSHIP_INFO.workingHoursWeek}</p>
+              <p><strong>CNPJ:</strong> {DEALERSHIP_INFO.cnpj}</p>
+              <p><strong>WhatsApp Vendas:</strong> {DEALERSHIP_INFO.phoneWhatsapp}</p>
+              <p><strong>Telefone Fixo:</strong> {DEALERSHIP_INFO.phoneLandline}</p>
+              <p><strong>Endereço:</strong> {DEALERSHIP_INFO.address.full}</p>
+              <p><strong>Horários:</strong> {DEALERSHIP_INFO.hours.weekdays}</p>
             </div>
           </div>
         )}

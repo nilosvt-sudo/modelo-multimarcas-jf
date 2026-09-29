@@ -4,19 +4,20 @@ import React, { useState } from "react";
 import { Vehicle } from "@/types";
 import {
   formatCurrency,
-  calculateFinancing,
   PARTNER_BANKS,
+  calculateInstallment,
   generateWhatsAppLink
 } from "@/lib/constants";
 import {
   Calculator,
-  Percent,
   CheckCircle2,
   ShieldCheck,
   Send,
-  Sparkles,
   Building2,
-  X
+  Percent,
+  Calendar,
+  X,
+  Car
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/SocialIcons";
 
@@ -33,43 +34,52 @@ export default function FinancingSimulatorSection({
   onClose,
   selectedVehicle = null,
 }: FinancingSimulatorSectionProps) {
-  const [targetCarPrice, setTargetCarPrice] = useState<number>(
-    selectedVehicle ? parseFloat(selectedVehicle.price) : 75000
+  // Vehicle Selection or Custom Amount
+  const [vehicleId, setVehicleId] = useState<number | "custom">(
+    selectedVehicle?.id || (vehicles.length > 0 ? vehicles[0].id : "custom")
   );
-  const [selectedVehicleId, setSelectedVehicleId] = useState<string>(
-    selectedVehicle ? String(selectedVehicle.id) : ""
-  );
-  const [entryAmount, setEntryAmount] = useState<number>(20000);
-  const [months, setMonths] = useState<number>(48);
+  
+  const currentVehicle = vehicles.find((v) => v.id === vehicleId);
+  const basePrice = currentVehicle
+    ? (typeof currentVehicle.price === "number" ? currentVehicle.price : parseFloat(currentVehicle.price || "0"))
+    : 100000;
+
+  const [vehicleValue, setVehicleValue] = useState<number>(basePrice);
+  const [entryPercent, setEntryPercent] = useState<number>(30);
+  const [installments, setInstallments] = useState<number>(48);
+  const [selectedBank, setSelectedBank] = useState<string>(PARTNER_BANKS[0].name);
 
   // Form lead submission
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
   const [cpf, setCpf] = useState("");
-  const [birthDate, setBirthDate] = useState("");
-  const [hasCnh, setHasCnh] = useState("sim");
+  const [email, setEmail] = useState("");
+  const [notes, setNotes] = useState("");
   const [consentLGPD, setConsentLGPD] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleCarSelectChange = (idStr: string) => {
-    setSelectedVehicleId(idStr);
-    if (idStr) {
-      const v = vehicles.find((car) => car.id === parseInt(idStr, 10));
+  // Calculations
+  const activeBank = PARTNER_BANKS.find((b) => b.name === selectedBank) || PARTNER_BANKS[0];
+  const entryAmount = (vehicleValue * entryPercent) / 100;
+  const financedAmount = Math.max(0, vehicleValue - entryAmount);
+  const monthlyRate = activeBank.rate;
+  const monthlyPayment = calculateInstallment(financedAmount, monthlyRate, installments);
+  const totalFinanced = monthlyPayment * installments + entryAmount;
+
+  // Handle vehicle change
+  const handleSelectVehicle = (val: string) => {
+    if (val === "custom") {
+      setVehicleId("custom");
+    } else {
+      const id = parseInt(val, 10);
+      setVehicleId(id);
+      const v = vehicles.find((item) => item.id === id);
       if (v) {
-        const p = parseFloat(v.price);
-        setTargetCarPrice(p);
-        setEntryAmount(Math.round(p * 0.25));
+        setVehicleValue(typeof v.price === "number" ? v.price : parseFloat(v.price || "0"));
       }
     }
   };
-
-  const finCalc = calculateFinancing({
-    carPrice: targetCarPrice,
-    entryAmount: entryAmount,
-    months: months,
-  });
 
   const handleSubmitLead = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,20 +87,21 @@ export default function FinancingSimulatorSection({
 
     setSubmitting(true);
     try {
-      const selectedCarObj = vehicles.find((v) => v.id === parseInt(selectedVehicleId, 10));
+      const vehicleTitle = currentVehicle
+        ? `${currentVehicle.brand} ${currentVehicle.model} ${currentVehicle.version}`
+        : `Valor Customizado: ${formatCurrency(vehicleValue)}`;
+
       const payload = {
-        vehicleId: selectedCarObj ? selectedCarObj.id : null,
-        vehicleName: selectedCarObj
-          ? `${selectedCarObj.brand} ${selectedCarObj.model} (${selectedCarObj.yearFabrication})`
-          : `Simulação personalizada: ${formatCurrency(targetCarPrice)}`,
+        vehicleId: typeof vehicleId === "number" ? vehicleId : null,
+        vehicleName: vehicleTitle,
         name,
         phone,
         email,
         leadType: "financing",
-        entryAmount: entryAmount,
-        installments: months,
-        message: `Simulação: Carro ${formatCurrency(targetCarPrice)} | Entrada: ${formatCurrency(entryAmount)} em ${months}x.`,
-        notes: `CPF: ${cpf || "Não informado"} | Nascimento: ${birthDate || "Não informado"} | Possui CNH: ${hasCnh} | Consentimento LGPD: Sim`,
+        entryAmount,
+        installments,
+        message: `Simulação via ${selectedBank}: Entrada ${formatCurrency(entryAmount)} (${entryPercent}%) + ${installments}x de ${formatCurrency(monthlyPayment)}. CPF: ${cpf || "Não informado"}`,
+        notes: `Observações: ${notes || "Nenhuma"} | Consentimento LGPD: Sim`,
       };
 
       await fetch("/api/leads", {
@@ -101,401 +112,321 @@ export default function FinancingSimulatorSection({
 
       setSubmitted(true);
     } catch (err) {
-      console.error("Error submitting financing lead:", err);
+      console.error("Erro ao enviar proposta de financiamento:", err);
+      alert("Ocorreu um erro ao enviar sua simulação. Por favor, tente pelo WhatsApp.");
     } finally {
       setSubmitting(false);
     }
   };
 
-  const whatsappMessage = `Olá! Gostaria de uma aprovação de crédito na Modelo Multimarcas JF.
-Simulação:
-- Valor do Veículo: ${formatCurrency(targetCarPrice)}
-- Entrada: ${formatCurrency(entryAmount)}
-- Prazo: ${months}x de ${formatCurrency(finCalc.monthlyPayment)}
-- Nome: ${name || "Cliente"}
-- Telefone: ${phone || "Não informado"}`;
+  const currentVehicleTitle = currentVehicle
+    ? `${currentVehicle.brand} ${currentVehicle.model}`
+    : `Veículo de ${formatCurrency(vehicleValue)}`;
 
+  const whatsappMessage = `Olá! Fiz uma simulação de financiamento no site da Apex Motors para o ${currentVehicleTitle}. Entrada de ${formatCurrency(entryAmount)} + ${installments}x de ${formatCurrency(monthlyPayment)} pelo ${selectedBank}. Gostaria de aprovar meu crédito!`;
   const whatsappUrl = generateWhatsAppLink(whatsappMessage);
 
   const content = (
-    <div className="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 md:p-10 border border-slate-800 shadow-2xl">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-8 border-b border-[#222834] pb-5">
-        <div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-            Simulador de Financiamento
+    <div className="bg-white dark:bg-[#10131a] rounded-3xl border border-slate-200 dark:border-[#232a38] shadow-2xl overflow-hidden">
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-blue-950 via-blue-900 to-slate-900 p-6 sm:p-8 text-white relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none" />
+        <div className="relative z-10 max-w-3xl">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 border border-blue-400/30 backdrop-blur-md text-xs font-semibold uppercase tracking-wider text-blue-300 mb-2">
+            <Calculator className="w-3.5 h-3.5" />
+            <span>Simulador de Financiamento Automotivo</span>
+          </div>
+          <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+            Simule seu Financiamento em Segundos
           </h2>
-          <p className="text-sm text-slate-400 mt-1">
-            Simulação estimada com os principais bancos parceiros (BV, Santander, Itaú, Bradesco, PAN) com aprovação ágil.
+          <p className="text-slate-300 text-xs sm:text-sm mt-1.5 leading-relaxed">
+            Taxas especiais a partir de 1,29% a.m. com aprovação rápida através dos maiores bancos do Brasil.
           </p>
         </div>
-
-        {onClose && (
-          <button
-            onClick={onClose}
-            className="w-10 h-10 rounded-full bg-[#181d26] hover:bg-[#232a38] text-slate-300 flex items-center justify-center transition-colors cursor-pointer shrink-0"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        )}
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        {/* Sliders & Car Selection (7 cols) */}
-        <div className="lg:col-span-7 space-y-6">
-          {/* Pick from inventory dropdown or custom price */}
+      <div className="p-6 sm:p-8 lg:p-10 grid lg:grid-cols-12 gap-8 items-start">
+        {/* Controls Column */}
+        <div className="lg:col-span-6 space-y-6">
+          {/* Escolha do Carro */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
-              Escolha um veículo do estoque ou personalize o valor
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+              1. Selecione o Veículo do Estoque
             </label>
-            <select
-              value={selectedVehicleId}
-              onChange={(e) => handleCarSelectChange(e.target.value)}
-              className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#0047cc] focus:ring-1 focus:ring-[#0047cc] mb-2"
-            >
-              <option value="">Simulação Livre (Personalizar Valor)</option>
-              {vehicles.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.brand} {v.model} {v.version} ({v.yearFabrication}) - {formatCurrency(v.price)}
-                </option>
-              ))}
-            </select>
-
-            {!selectedVehicleId && (
-              <div className="pt-2">
-                <div className="flex justify-between text-xs text-slate-400 mb-1">
-                  <span>Valor do Carro</span>
-                  <span className="text-white font-bold text-sm tabular-nums">
-                    {formatCurrency(targetCarPrice)}
-                  </span>
-                </div>
-                <input
-                  type="range"
-                  min={30000}
-                  max={250000}
-                  step={2000}
-                  value={targetCarPrice}
-                  onChange={(e) => setTargetCarPrice(parseFloat(e.target.value))}
-                  className="w-full accent-[#0047cc] cursor-pointer"
-                />
-              </div>
-            )}
+            <div className="relative">
+              <select
+                value={vehicleId}
+                onChange={(e) => handleSelectVehicle(e.target.value)}
+                className="w-full bg-slate-50 dark:bg-[#161a22] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl px-4 py-3 text-sm font-semibold focus:outline-none focus:border-blue-500 transition-colors"
+              >
+                {vehicles.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.brand} {v.model} {v.version} ({v.yearFabrication}/{v.yearModel}) - {formatCurrency(v.price)}
+                  </option>
+                ))}
+                <option value="custom">Outro Valor (Personalizado)</option>
+              </select>
+            </div>
           </div>
 
-          {/* Down Payment Slider with Interactive Presets and Generous Spacing */}
-          <div className="bg-[#121620] border border-[#242c3c] rounded-2xl p-5 space-y-3">
-            <div className="flex justify-between items-baseline text-xs font-semibold text-slate-300">
-              <span className="uppercase tracking-wider font-speed text-white">Valor da Entrada</span>
-              <span className="text-white font-black text-base sm:text-lg tabular-nums font-speed text-[#0047cc] dark:text-[#3b82f6]">
+          {/* Valor Customizado se selecionado */}
+          {vehicleId === "custom" && (
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+                Valor Total do Veículo
+              </label>
+              <input
+                type="number"
+                min={20000}
+                max={2000000}
+                step={5000}
+                value={vehicleValue}
+                onChange={(e) => setVehicleValue(Number(e.target.value))}
+                className="w-full bg-slate-50 dark:bg-[#161a22] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl px-4 py-2.5 text-sm font-semibold focus:outline-none focus:border-blue-500"
+              />
+            </div>
+          )}
+
+          {/* Entrada */}
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                2. Valor da Entrada ({entryPercent}%)
+              </label>
+              <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
                 {formatCurrency(entryAmount)}
               </span>
             </div>
-            
-            <div className="py-2">
-              <input
-                type="range"
-                min={0}
-                max={targetCarPrice * 0.8}
-                step={1000}
-                value={entryAmount}
-                onChange={(e) => setEntryAmount(parseFloat(e.target.value))}
-                className="w-full accent-[#0047cc] cursor-pointer h-2 bg-[#1d2332] rounded-lg appearance-none"
-              />
-            </div>
-
-            {/* Interactive Down Payment Quick Presets */}
-            <div className="pt-2 border-t border-[#1f2736]">
-              <span className="text-[11px] text-slate-400 font-medium block mb-2 font-speed uppercase tracking-wider">
-                Atalhos Rápidos de Entrada:
-              </span>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setEntryAmount(0)}
-                  className={`py-2 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
-                    entryAmount === 0
-                      ? "bg-[#0047cc] text-white border-[#0047cc] shadow-sm"
-                      : "bg-[#181d28] text-slate-300 border-[#2d374a] hover:bg-[#222a3a] hover:text-white"
-                  }`}
-                >
-                  Sem Entrada (R$ 0)
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEntryAmount(Math.round(targetCarPrice * 0.2))}
-                  className={`py-2 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
-                    Math.abs(entryAmount - targetCarPrice * 0.2) < 500
-                      ? "bg-[#0047cc] text-white border-[#0047cc] shadow-sm"
-                      : "bg-[#181d28] text-slate-300 border-[#2d374a] hover:bg-[#222a3a] hover:text-white"
-                  }`}
-                >
-                  20% ({formatCurrency(targetCarPrice * 0.2)})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEntryAmount(Math.round(targetCarPrice * 0.3))}
-                  className={`py-2 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
-                    Math.abs(entryAmount - targetCarPrice * 0.3) < 500
-                      ? "bg-[#0047cc] text-white border-[#0047cc] shadow-sm"
-                      : "bg-[#181d28] text-slate-300 border-[#2d374a] hover:bg-[#222a3a] hover:text-white"
-                  }`}
-                >
-                  30% ({formatCurrency(targetCarPrice * 0.3)})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setEntryAmount(Math.round(targetCarPrice * 0.5))}
-                  className={`py-2 px-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
-                    Math.abs(entryAmount - targetCarPrice * 0.5) < 500
-                      ? "bg-[#0047cc] text-white border-[#0047cc] shadow-sm"
-                      : "bg-[#181d28] text-slate-300 border-[#2d374a] hover:bg-[#222a3a] hover:text-white"
-                  }`}
-                >
-                  50% ({formatCurrency(targetCarPrice * 0.5)})
-                </button>
-              </div>
+            <input
+              type="range"
+              min={10}
+              max={80}
+              step={5}
+              value={entryPercent}
+              onChange={(e) => setEntryPercent(Number(e.target.value))}
+              className="w-full h-2 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-blue-600"
+            />
+            <div className="flex justify-between text-[11px] text-slate-400 mt-1">
+              <span>10% ({formatCurrency(vehicleValue * 0.1)})</span>
+              <span>30%</span>
+              <span>50%</span>
+              <span>80% ({formatCurrency(vehicleValue * 0.8)})</span>
             </div>
           </div>
 
-          {/* Installment Term Selector */}
+          {/* Prazo de Parcelamento */}
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
-              Prazo de Pagamento
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+              3. Número de Parcelas
             </label>
             <div className="grid grid-cols-5 gap-2">
-              {[12, 24, 36, 48, 60].map((m) => (
+              {[12, 24, 36, 48, 60].map((months) => (
                 <button
-                  key={m}
+                  key={months}
                   type="button"
-                  onClick={() => setMonths(m)}
-                  className={`py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
-                    months === m
-                      ? "bg-gradient-to-r from-[#0047cc] to-[#005eff] text-white shadow-md scale-105"
-                      : "bg-[#181d26] text-slate-300 border border-[#2b3342] hover:bg-[#222936] hover:text-white"
+                  onClick={() => setInstallments(months)}
+                  className={`py-2.5 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                    installments === months
+                      ? "bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-600/30 scale-[1.02]"
+                      : "bg-slate-50 dark:bg-[#161a22] border-slate-200 dark:border-[#232a38] text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800"
                   }`}
                 >
-                  {m}x
+                  {months}x
                 </button>
               ))}
             </div>
           </div>
 
-          {/* Results Summary Box */}
-          <div className="bg-[#181d26] rounded-xl p-5 border border-[#2b3342]">
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-center">
-              <div>
-                <span className="text-[11px] text-slate-400 block uppercase font-bold tracking-wider">
-                  Valor Financiado
-                </span>
-                <span className="text-base sm:text-lg font-bold text-white tabular-nums">
-                  {formatCurrency(finCalc.financedAmount)}
-                </span>
-              </div>
-              <div>
-                <span className="text-[11px] text-slate-400 block uppercase font-bold tracking-wider">
-                  Prazo
-                </span>
-                <span className="text-base sm:text-lg font-bold text-white">{months} meses</span>
-              </div>
-              <div className="col-span-2 sm:col-span-1 bg-emerald-950/40 border border-emerald-700/50 rounded-lg p-2.5">
-                <span className="text-[10px] text-emerald-300 block uppercase font-bold tracking-wider">
-                  Parcela Estimada
-                </span>
-                <span className="text-lg sm:text-xl font-extrabold text-emerald-400 tabular-nums">
-                  {formatCurrency(finCalc.monthlyPayment)}
-                </span>
-              </div>
+          {/* Banco Parceiro */}
+          <div>
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2">
+              4. Banco Parceiro & Taxa Estimada
+            </label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {PARTNER_BANKS.map((bank) => (
+                <button
+                  key={bank.name}
+                  type="button"
+                  onClick={() => setSelectedBank(bank.name)}
+                  className={`p-2.5 rounded-xl text-center border transition-all cursor-pointer ${
+                    selectedBank === bank.name
+                      ? "bg-blue-50 dark:bg-blue-950/40 border-blue-500 text-blue-700 dark:text-blue-300 font-bold"
+                      : "bg-slate-50 dark:bg-[#161a22] border-slate-200 dark:border-[#232a38] text-slate-600 dark:text-slate-400"
+                  }`}
+                >
+                  <div className="text-xs font-bold truncate">{bank.name}</div>
+                  <div className="text-[10px] text-slate-500 mt-0.5">{(bank.rate * 100).toFixed(2)}% a.m.</div>
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Partner Banks Row */}
-          <div>
-            <span className="text-xs font-semibold text-slate-400 block mb-2">
-              Bancos Parceiros com Aprovação Imediata:
-            </span>
-            <div className="flex flex-wrap gap-2">
-              {PARTNER_BANKS.map((b) => (
-                <span
-                  key={b.name}
-                  className="bg-slate-800 text-slate-300 border border-slate-700 text-xs px-2.5 py-1 rounded-md"
-                >
-                  {b.name}
+          {/* Resumo da Parcela */}
+          <div className="bg-gradient-to-br from-blue-900 to-slate-900 text-white p-6 rounded-2xl shadow-lg relative overflow-hidden">
+            <div className="flex justify-between items-start">
+              <div>
+                <span className="text-xs font-semibold text-blue-300 uppercase tracking-wider">
+                  Valor Estimado da Parcela
                 </span>
-              ))}
+                <div className="text-3xl sm:text-4xl font-black text-white mt-1">
+                  {installments}x de {formatCurrency(monthlyPayment)}
+                </div>
+              </div>
+              <div className="p-3 bg-white/10 backdrop-blur-md rounded-xl">
+                <Car className="w-6 h-6 text-blue-300" />
+              </div>
+            </div>
+
+            <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 gap-4 text-xs">
+              <div>
+                <span className="text-slate-400 block">Entrada ({entryPercent}%):</span>
+                <span className="font-bold text-white">{formatCurrency(entryAmount)}</span>
+              </div>
+              <div>
+                <span className="text-slate-400 block">Saldo Financiado:</span>
+                <span className="font-bold text-white">{formatCurrency(financedAmount)}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Lead Form Column (5 cols) */}
-        <div className="lg:col-span-5 bg-slate-950/60 rounded-2xl p-5 sm:p-6 border border-slate-800 flex flex-col justify-between">
+        {/* Lead Capture Form */}
+        <div className="lg:col-span-6 bg-slate-50 dark:bg-[#141720] p-6 sm:p-8 rounded-2xl border border-slate-200 dark:border-[#232a38]">
           {submitted ? (
-            <div className="text-center py-8 space-y-4 my-auto">
-              <div className="w-16 h-16 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto">
-                <CheckCircle2 className="w-8 h-8" />
+            <div className="text-center py-8 space-y-4">
+              <div className="w-16 h-16 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 rounded-full flex items-center justify-center mx-auto">
+                <CheckCircle2 className="w-10 h-10" />
               </div>
-              <h3 className="text-xl font-bold text-white">Proposta Enviada com Sucesso!</h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
-                Nossos consultores da loja Modelo Multimarcas JF receberam sua simulação e vão entrar em contato pelo WhatsApp com a análise dos bancos.
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                Proposta Enviada com Sucesso!
+              </h3>
+              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-300 max-w-md mx-auto">
+                Nosso time de consultores de crédito da Apex Motors já recebeu sua simulação e entrará em contato com a melhor condição aprovada.
               </p>
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center justify-center gap-2 w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 px-4 rounded-xl text-sm transition-all shadow-lg"
-              >
-                <WhatsAppIcon className="w-5 h-5 fill-white" />
-                Agilizar Análise no WhatsApp
-              </a>
-              <button
-                onClick={() => setSubmitted(false)}
-                className="text-xs text-slate-400 hover:text-white underline block mx-auto cursor-pointer"
-              >
-                Fazer nova simulação
-              </button>
+              <div className="pt-4">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm px-6 py-3.5 rounded-xl shadow-md transition-all"
+                >
+                  <WhatsAppIcon className="w-4 h-4 fill-white" />
+                  <span>Acelerar Aprovação no WhatsApp</span>
+                </a>
+              </div>
             </div>
           ) : (
             <form onSubmit={handleSubmitLead} className="space-y-4">
               <div>
-                <h3 className="text-white font-bold text-base tracking-tight font-speed uppercase">
-                  Falar com Consultor sobre Financiamento
+                <h3 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+                  Envie sua Proposta para Aprovação
                 </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Envie sua simulação estimada para receber um atendimento personalizado da Modelo Multimarcas JF junto aos bancos parceiros (BV, Santander, Itaú, Bradesco, PAN).
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Preencha seus dados para consultar o score e garantir esta taxa especial com nossos bancos conveniados.
                 </p>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Nome Completo *
                 </label>
                 <input
                   type="text"
                   required
-                  placeholder="Nome completo"
+                  placeholder="Ex: Carlos Eduardo Santos"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#0047cc]"
+                  className="w-full bg-white dark:bg-[#1a1d24] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl px-3.5 h-10 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
-                  WhatsApp <span className="text-[#e0121d]">*</span>
-                </label>
-                <input
-                  type="tel"
-                  required
-                  placeholder="(32) 99999-9999"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#0047cc]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
-                  CPF (Para Consulta Bancária) <span className="text-[#e0121d]">*</span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="000.000.000-00"
-                  value={cpf}
-                  onChange={(e) => setCpf(e.target.value)}
-                  className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#0047cc]"
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-2.5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
-                    Data de Nascimento
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    WhatsApp / Telefone *
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    placeholder="(11) 99999-9999"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    className="w-full bg-white dark:bg-[#1a1d24] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl px-3.5 h-10 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    CPF (para consulta bancária)
                   </label>
                   <input
                     type="text"
-                    placeholder="DD/MM/AAAA"
-                    value={birthDate}
-                    onChange={(e) => setBirthDate(e.target.value)}
-                    className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#0047cc]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
-                    E-mail (Opcional)
-                  </label>
-                  <input
-                    type="email"
-                    placeholder="seuemail@exemplo.com"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-[#181d26] border border-[#2b3342] text-white rounded-lg px-3 py-2.5 text-xs focus:outline-none focus:border-[#0047cc]"
+                    placeholder="000.000.000-00"
+                    value={cpf}
+                    onChange={(e) => setCpf(e.target.value)}
+                    className="w-full bg-white dark:bg-[#1a1d24] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl px-3.5 h-10 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1">
-                  Possui CNH?
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  E-mail (opcional)
                 </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setHasCnh("sim")}
-                    className={`py-2 rounded-lg text-xs font-semibold cursor-pointer border transition-colors ${
-                      hasCnh === "sim"
-                        ? "bg-[#0047cc] border-[#0047cc] text-white"
-                        : "bg-[#181d26] border-[#2b3342] text-slate-300 hover:bg-[#222936]"
-                    }`}
-                  >
-                    Sim, CNH Ativa
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setHasCnh("nao")}
-                    className={`py-2 rounded-lg text-xs font-semibold cursor-pointer border transition-colors ${
-                      hasCnh === "nao"
-                        ? "bg-[#0047cc] border-[#0047cc] text-white"
-                        : "bg-[#181d26] border-[#2b3342] text-slate-300 hover:bg-[#222936]"
-                    }`}
-                  >
-                    Não possuo
-                  </button>
-                </div>
+                <input
+                  type="email"
+                  placeholder="carlos@exemplo.com.br"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-white dark:bg-[#1a1d24] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl px-3.5 h-10 text-xs sm:text-sm focus:outline-none focus:border-blue-500"
+                />
               </div>
 
-              {/* LGPD Consent Checkbox */}
-              <div className="flex items-start gap-2.5 pt-1">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Tem veículo para dar na troca? Detalhes adicionais:
+                </label>
+                <textarea
+                  rows={2}
+                  placeholder="Ex: Tenho um HB20 2020 para dar de entrada..."
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  className="w-full bg-white dark:bg-[#1a1d24] border border-slate-200 dark:border-[#232a38] text-slate-900 dark:text-white rounded-xl p-3 text-xs focus:outline-none focus:border-blue-500"
+                />
+              </div>
+
+              <div className="flex items-start gap-2 pt-1">
                 <input
-                  id="consent-financing-lgpd"
                   type="checkbox"
+                  id="lgpd_simulador"
                   required
                   checked={consentLGPD}
                   onChange={(e) => setConsentLGPD(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 rounded border-slate-700 bg-[#181d26] text-[#0047cc] focus:ring-[#0047cc] cursor-pointer shrink-0"
+                  className="mt-0.5 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
                 />
-                <label htmlFor="consent-financing-lgpd" className="text-[11px] text-slate-400 cursor-pointer select-none leading-relaxed">
-                  Concordo com o tratamento dos meus dados para fins de simulação e contato comercial pela Modelo Multimarcas JF, nos termos da Lei Geral de Proteção de Dados (LGPD).
+                <label htmlFor="lgpd_simulador" className="text-[11px] text-slate-500 dark:text-slate-400">
+                  Concordo em fornecer meus dados para consulta de financiamento na Apex Motors conforme a LGPD.
                 </label>
               </div>
 
-              <div className="pt-2 space-y-2">
+              <div className="pt-2 flex flex-col sm:flex-row gap-3">
                 <button
                   type="submit"
                   disabled={submitting || !consentLGPD}
-                  className="w-full bg-gradient-to-r from-[#e0121d] via-[#cc0c16] to-[#b00a13] hover:from-[#c40510] hover:to-[#960007] disabled:opacity-50 text-white font-speed font-bold uppercase tracking-wider py-3 px-4 rounded-xl text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
+                  className="flex-1 py-3 bg-gradient-to-r from-blue-700 to-blue-600 hover:from-blue-800 hover:to-blue-700 text-white font-bold text-xs sm:text-sm rounded-xl shadow-md shadow-blue-700/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   <Send className="w-4 h-4" />
-                  {submitting ? "Enviando Simulação..." : "Falar com Consultor sobre Financiamento"}
+                  <span>{submitting ? "Enviando..." : "Solicitar Aprovação Imediata"}</span>
                 </button>
 
                 <a
                   href={whatsappUrl}
                   target="_blank"
-                  rel="noreferrer"
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition-all flex items-center justify-center gap-2"
+                  rel="noopener noreferrer"
+                  className="py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm"
                 >
                   <WhatsAppIcon className="w-4 h-4 fill-white" />
-                  Simular Direto com Consultor no WhatsApp
+                  <span>WhatsApp</span>
                 </a>
               </div>
             </form>
@@ -505,21 +436,40 @@ Simulação:
     </div>
   );
 
+  // If used as modal
   if (isOpen !== undefined) {
     if (!isOpen) return null;
+
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 md:p-6">
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm" onClick={onClose} />
-        <div className="relative max-w-5xl w-full max-h-[92vh] overflow-y-auto z-10">
+      <div
+        className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md overflow-y-auto"
+        onClick={onClose}
+      >
+        <div
+          className="relative w-full max-w-5xl my-auto animate-in fade-in zoom-in-95 duration-200"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {onClose && (
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute top-4 right-4 z-20 p-2 bg-white/80 dark:bg-black/80 rounded-full text-slate-700 dark:text-white hover:bg-white shadow-md cursor-pointer"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
           {content}
         </div>
       </div>
     );
   }
 
+  // If rendered inline on the page
   return (
-    <section id="financiamento" className="py-12 bg-slate-950 text-white scroll-mt-20">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">{content}</div>
+    <section id="financiamento" className="py-12 sm:py-16 bg-slate-50 dark:bg-[#0c0e14] transition-colors">
+      <div className="max-w-[1680px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16">
+        {content}
+      </div>
     </section>
   );
 }

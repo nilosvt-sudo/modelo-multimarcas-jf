@@ -188,7 +188,7 @@ export async function POST(request: NextRequest) {
       coverImage: body.coverImage || "https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?auto=format&fit=crop&w=800&q=80",
       gallery: Array.isArray(body.gallery) ? JSON.stringify(body.gallery) : (typeof body.gallery === "string" ? body.gallery : JSON.stringify([body.coverImage])),
       features: Array.isArray(body.features) ? JSON.stringify(body.features) : (typeof body.features === "string" ? body.features : JSON.stringify([])),
-      description: body.description || "Veículo seminovo revisado com garantia Modelo Multimarcas JF.",
+      description: body.description || "Veículo seminovo revisado com garantia Apex Motors.",
       isFeatured: Boolean(body.isFeatured),
       badge: body.badge || "Seminovo",
       hasInspectionReport: body.hasInspectionReport !== undefined ? Boolean(body.hasInspectionReport) : true,

@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 
     const newReview = {
       authorName: body.authorName,
-      neighborhood: body.neighborhood || "Juiz de Fora - MG",
+      neighborhood: body.neighborhood || "São Paulo - SP",
       rating: Math.min(5, Math.max(1, parseInt(body.rating || 5, 10))),
       comment: body.comment,
       purchasedVehicle: body.purchasedVehicle || null,

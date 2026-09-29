@@ -12,10 +12,10 @@ import {
   Heart,
   Scale,
   Award,
-  ArrowUpRight
+  ArrowUpRight,
+  CarFront
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/SocialIcons";
-
 import { SpotlightCard } from "@/components/ui/spotlight-card";
 
 interface VehicleCardProps {
@@ -44,13 +44,13 @@ export default function VehicleCard({
   const financed = priceNum - entry30;
   const estInstallment = Math.round((financed * 1.42) / 48);
 
-  const whatsappMessage = `Olá! Tenho interesse no ${vehicle.brand} ${vehicle.model} ${vehicle.version} (${vehicle.yearFabrication}/${vehicle.yearModel}) anunciado por ${formatCurrency(vehicle.price)} na Modelo Multimarcas JF. Poderiam me passar mais informações?`;
+  const whatsappMessage = `Olá! Tenho interesse no ${vehicle.brand} ${vehicle.model} ${vehicle.version} (${vehicle.yearFabrication}/${vehicle.yearModel}) anunciado por ${formatCurrency(vehicle.price)} na Apex Motors. Poderiam me passar mais informações?`;
   const whatsappUrl = generateWhatsAppLink(whatsappMessage);
 
   return (
     <SpotlightCard
       spotlightColor="rgba(0, 71, 204, 0.14)"
-      className="bg-white dark:bg-[#0e1117] rounded-2xl overflow-hidden border border-slate-200/90 dark:border-[#232a38] shadow-sm hover:border-[#0047cc]/40 dark:hover:border-[#0047cc]/60 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group relative"
+      className="bg-white dark:bg-[#0e1117] rounded-2xl overflow-hidden border border-slate-200/90 dark:border-[#232a38] shadow-sm hover:border-[#0047cc]/50 dark:hover:border-[#0047cc]/70 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col group relative"
       role="article"
       aria-label={`${vehicle.brand} ${vehicle.model}`}
     >
@@ -100,123 +100,131 @@ export default function VehicleCard({
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              onToggleCompare(vehicle);
+              onToggleFavorite(vehicle.id);
             }}
-            className={`p-2 rounded-full backdrop-blur-md transition-all shadow-sm ${
-              isCompared
-                ? "bg-[#0047cc] text-white"
-                : "bg-white/85 dark:bg-[#0e1117]/85 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-[#151821] border border-slate-200 dark:border-[#232a38]"
+            aria-label={isFavorite ? "Remover dos favoritos" : "Salvar veículo"}
+            className={`p-2 rounded-xl backdrop-blur-md border transition-all cursor-pointer shadow-sm ${
+              isFavorite
+                ? "bg-rose-500 border-rose-500 text-white scale-110"
+                : "bg-white/80 dark:bg-black/60 border-white/60 dark:border-white/20 text-slate-700 dark:text-white hover:text-rose-500 hover:bg-white"
             }`}
-            title="Comparar este veículo"
-            aria-label="Comparar este veículo"
           >
-            <Scale className="w-3.5 h-3.5" />
+            <Heart className={`w-4 h-4 ${isFavorite ? "fill-white" : ""}`} />
           </button>
 
           <button
             type="button"
             onClick={(e) => {
               e.stopPropagation();
-              onToggleFavorite(vehicle.id);
+              onToggleCompare(vehicle);
             }}
-            className={`p-2 rounded-full backdrop-blur-md transition-all shadow-sm ${
-              isFavorite
-                ? "bg-rose-600 text-white"
-                : "bg-white/85 dark:bg-[#0e1117]/85 text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-white dark:hover:bg-[#151821] border border-slate-200 dark:border-[#232a38]"
+            aria-label={isCompared ? "Remover da comparação" : "Comparar veículo"}
+            className={`p-2 rounded-xl backdrop-blur-md border transition-all cursor-pointer shadow-sm ${
+              isCompared
+                ? "bg-[#0047cc] border-[#0047cc] text-white scale-110"
+                : "bg-white/80 dark:bg-black/60 border-white/60 dark:border-white/20 text-slate-700 dark:text-white hover:text-[#0047cc] hover:bg-white"
             }`}
-            title="Favoritar veículo"
-            aria-label="Favoritar veículo"
           >
-            <Heart className={`w-3.5 h-3.5 ${isFavorite ? "fill-white" : ""}`} />
+            <Scale className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Cautelar Verification Tag on bottom */}
-        {vehicle.hasInspectionReport && (
-          <div className="absolute bottom-2.5 left-3 bg-white/95 dark:bg-[#0e1117]/95 backdrop-blur-md border border-slate-200 dark:border-[#232a38] text-emerald-600 dark:text-emerald-400 text-[10px] font-semibold px-2 py-0.5 rounded shadow-sm flex items-center gap-1">
-            <ShieldCheck className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
-            Laudo Cautelar Aprovado
-          </div>
-        )}
+        {/* Gradient overlay on hover */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+          <span className="text-white text-xs font-semibold flex items-center gap-1">
+            Ver detalhes completos <ArrowUpRight className="w-3.5 h-3.5" />
+          </span>
+        </div>
       </div>
 
-      {/* Card Content */}
-      <div className="p-4 sm:p-5 flex flex-col flex-1">
-        {/* Title & Year */}
-        <div className="mb-3 cursor-pointer" onClick={() => onSelect(vehicle)}>
-          <div className="flex items-baseline justify-between gap-2">
-            <h3 className="font-speed font-bold uppercase text-slate-900 dark:text-white text-base sm:text-lg group-hover:text-[#0047cc] dark:group-hover:text-[#3b82f6] transition-colors line-clamp-1 tracking-tight">
-              {vehicle.brand} {vehicle.model}
-            </h3>
-            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 shrink-0 tabular-nums font-speed">
+      {/* Card Body */}
+      <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between space-y-4">
+        <div>
+          {/* Brand and Year */}
+          <div className="flex items-center justify-between gap-2 mb-1">
+            <span className="text-xs font-bold text-[#0047cc] dark:text-[#3b82f6] tracking-wider uppercase">
+              {vehicle.brand}
+            </span>
+            <span className="text-xs text-slate-500 dark:text-slate-400 font-semibold flex items-center gap-1">
+              <Calendar className="w-3.5 h-3.5" />
               {vehicle.yearFabrication}/{vehicle.yearModel}
             </span>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1 mt-0.5 font-normal">
+
+          {/* Model Title */}
+          <h3
+            onClick={() => onSelect(vehicle)}
+            className="text-base sm:text-lg font-bold text-slate-900 dark:text-white group-hover:text-[#0047cc] dark:group-hover:text-[#3b82f6] transition-colors line-clamp-1 cursor-pointer"
+          >
+            {vehicle.model}
+          </h3>
+
+          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 line-clamp-1">
             {vehicle.version}
           </p>
+
+          {/* Key Specs Pills */}
+          <div className="grid grid-cols-2 gap-2 mt-3 pt-3 border-t border-slate-100 dark:border-[#232a38] text-xs text-slate-600 dark:text-slate-300">
+            <div className="flex items-center gap-1.5 truncate">
+              <Gauge className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span className="truncate">{formatMileage(vehicle.mileage)}</span>
+            </div>
+            <div className="flex items-center gap-1.5 truncate">
+              <Cog className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span className="truncate">{vehicle.transmission}</span>
+            </div>
+            <div className="flex items-center gap-1.5 truncate">
+              <Fuel className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span className="truncate">{vehicle.fuel}</span>
+            </div>
+            <div className="flex items-center gap-1.5 truncate">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+              <span className="truncate">Laudo 100% OK</span>
+            </div>
+          </div>
         </div>
 
-        {/* Quick Specs Grid */}
-        <div className="grid grid-cols-2 gap-2 py-2.5 border-y border-slate-100 dark:border-[#232a38] text-xs text-slate-500 dark:text-slate-400 mb-3">
-          <div className="flex items-center gap-1.5">
-            <Gauge className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
-            <span className="font-medium text-slate-700 dark:text-slate-300 tabular-nums font-speed">{formatMileage(vehicle.mileage)}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Cog className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
-            <span className="font-medium text-slate-700 dark:text-slate-300 truncate">{vehicle.transmission}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Fuel className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
-            <span className="font-medium text-slate-700 dark:text-slate-300">{vehicle.fuel}</span>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <Calendar className="w-3.5 h-3.5 text-slate-400 dark:text-slate-500 shrink-0" />
-            <span className="font-medium text-slate-700 dark:text-slate-300 truncate">{vehicle.color}</span>
-          </div>
-        </div>
-
-        {/* Price and Financing Suggestion */}
-        <div className="mt-auto pt-1">
-          <div className="flex items-baseline justify-between mb-1.5">
-            <span className="text-2xl font-black text-slate-950 dark:text-white tracking-tight tabular-nums font-speed">
-              {formatCurrency(vehicle.price)}
-            </span>
-            {vehicle.singleOwner && (
-              <span className="text-[10px] text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-[#151821] border border-slate-200 dark:border-[#232a38] px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider flex items-center gap-1 font-speed">
-                <Award className="w-3 h-3 text-slate-500 dark:text-slate-400" />
-                Único Dono
+        {/* Pricing / Financing Section */}
+        <div className="pt-3 border-t border-slate-100 dark:border-[#232a38] space-y-3">
+          <div className="flex items-baseline justify-between">
+            <div>
+              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+                Valor à Vista
               </span>
+              <span className="text-lg sm:text-xl font-black text-slate-900 dark:text-white">
+                {formatCurrency(vehicle.price)}
+              </span>
+            </div>
+            {estInstallment > 0 && (
+              <div className="text-right">
+                <span className="text-[10px] uppercase font-medium text-slate-400 block">
+                  Simulação 48x
+                </span>
+                <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                  {formatCurrency(estInstallment)}/mês
+                </span>
+              </div>
             )}
           </div>
 
-          <div className="text-[11px] text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-[#151821] px-2.5 py-1.5 rounded-lg border border-slate-100 dark:border-[#232a38] flex items-center justify-between mb-3.5">
-            <span>Simulação a partir de:</span>
-            <span className="font-bold text-slate-800 dark:text-white tabular-nums font-speed">
-              48x de ~{formatCurrency(estInstallment)}
-            </span>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-2">
+          {/* Dual Action Buttons */}
+          <div className="grid grid-cols-2 gap-2 pt-1">
             <button
+              type="button"
               onClick={() => onSelect(vehicle)}
-              className="w-full bg-slate-100 dark:bg-[#151821] hover:bg-slate-200 dark:hover:bg-[#232a38] text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-[#232a38] font-speed font-bold uppercase tracking-wider py-2.5 px-3 rounded-lg text-xs sm:text-sm transition-all cursor-pointer flex items-center justify-center gap-1 shadow-sm"
+              className="w-full py-2 px-3 text-xs font-bold text-slate-800 dark:text-slate-200 bg-slate-100 hover:bg-slate-200 dark:bg-[#161a22] dark:hover:bg-[#1f2430] border border-slate-200 dark:border-[#232a38] rounded-xl transition-colors cursor-pointer text-center"
             >
-              <span>Detalhes</span>
-              <ArrowUpRight className="w-3.5 h-3.5" />
+              Ver Detalhes
             </button>
 
             <a
               href={whatsappUrl}
               target="_blank"
-              rel="noreferrer"
-              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2.5 px-3 rounded-lg text-xs sm:text-sm transition-colors flex items-center justify-center gap-1.5 shadow-sm"
-              onClick={(e) => e.stopPropagation()}
+              rel="noopener noreferrer"
+              className="w-full py-2 px-3 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-500 rounded-xl transition-colors flex items-center justify-center gap-1.5 shadow-sm"
             >
-              <WhatsAppIcon className="w-3.5 h-3.5 fill-white" />
-              Proposta
+              <WhatsAppIcon className="w-3.5 h-3.5 fill-white shrink-0" />
+              <span>Negociar</span>
             </a>
           </div>
         </div>

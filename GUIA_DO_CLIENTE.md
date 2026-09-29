@@ -1,6 +1,6 @@
-# 🚗 Manual de Gestão de Estoque — Painel Administrativo
+# 🚗 Manual de Gestão da Loja — Painel Administrativo
 
-Este guia foi preparado para que a equipe da revenda/concessionária possa gerenciar, cadastrar, editar e remover veículos do site sem depender de programadores.
+Este guia foi preparado para a equipe de vendas e administração da concessionária multimarcas gerenciar o estoque de veículos, fotos, valores, propostas de financiamento, avaliações de usados na troca e agendamentos de test drive diretamente pelo painel administrativo, sem depender de suporte técnico.
 
 ---
 
@@ -14,55 +14,53 @@ Este guia foi preparado para que a equipe da revenda/concessionária possa geren
 
 ---
 
-## ➕ 2. Como Cadastrar um Novo Carro
+## ➕ 2. Como Cadastrar um Novo Veículo no Estoque
 
-1. No topo da tela do painel, clique no botão laranja **"+ Novo Veículo"**.
-2. Preencha as informações do veículo:
-   * **Marca, Modelo e Versão** (Ex: *Toyota*, *Corolla*, *2.0 Altis Premium Hybrid*).
-   * **Ano Fabricação / Ano Modelo** (Ex: *2023 / 2024*).
-   * **Preço de Venda** e **Tabela FIPE** (opcional para destacar vantagem).
-   * **Km rodados, Câmbio, Combustível, Cor e Final da Placa**.
+1. No topo da tela do painel, clique no botão azul **"+ Novo Veículo"**.
+2. Preencha as informações do automóvel:
+   * **Marca** (Ex: *Toyota*, *Jeep*, *BMW*, *Volkswagen*, *Honda*, *Chevrolet*).
+   * **Modelo e Versão** (Ex: *Corolla Altis Hybrid 1.8*, *Compass Limited 1.3 Turbo*).
+   * **Ano Fabricação / Modelo** (Ex: *2023 / 2024*).
+   * **Quilometragem (Km)** (Ex: *24.500*).
+   * **Preço de Venda** (Ex: *149900.00*).
+   * **Câmbio** (*Automático*, *Manual*, *CVT*, *Dupla Embreagem*).
+   * **Combustível** (*Flex*, *Gasolina*, *Diesel*, *Híbrido*, *Elétrico*).
+   * **Carroceria** (*SUV*, *Sedan*, *Hatch*, *Pickup*, *Cupê*, *Esportivo*).
+   * **Cor** (Ex: *Branco Perolizado*, *Cinza Grafite*, *Preto Metálico*).
 3. **Fotos do Veículo:**
-   * **Foto de Capa:** Clique em *"Escolher foto do celular / computador"* e selecione a foto principal da frente do carro.
-   * **Galeria de Fotos:** Clique em *"Adicionar fotos à galeria"* e selecione múltiplas fotos de uma vez (traseira, interior, painel, bancos, motor).
-4. **Opcionais e Acessórios:**
-   * Marque os itens que o carro possui (Ar digital, Câmera de ré, Couro, Teto solar, etc.).
-5. **Status:**
-   * Mantenha como **"Disponível"**.
-6. Clique em **"Cadastrar Veículo"**.
-   * Pronto! O veículo já estará visível na página inicial e na aba de estoque (`/veiculos`).
+   * **Foto de Capa:** Clique em *"Escolher foto do celular / computador"* e selecione a foto principal em alta resolução.
+   * **Galeria de Fotos:** Adicione fotos de interior, painel, porta-malas e motor.
+4. **Opcionais e Destaques:**
+   * Marque os itens inclusos (Teto Solar Panorâmico, Painel Digital, Câmera 360°, Bancos em Couro, Piloto Automático Adaptativo, etc.).
+5. **Garantia & Laudo:**
+   * Marque *Laudo Cautelar Aprovado* e *Único Dono* se aplicável.
+6. Clique em **"Salvar Veículo"**.
+   * Pronto! O carro já aparecerá instantaneamente no estoque do site e no simulador de parcelas.
 
 ---
 
-## ✏️ 3. Como Alterar Preço, Editar ou Marcar como Vendido
+## ✏️ 3. Como Alterar Preços, Editar ou Dar Baixa em Veículos Vendidos
 
-* **Alterar Status Imediatamente:**
-  * Na tabela de estoque do painel, você pode alternar rapidamente o status entre **Disponível**, **Reservado** ou **Vendido**.
-* **Editar Informações ou Fotos:**
-  * Clique no botão **Editar** (ícone de lápis) no card do veículo. Altere o valor, descrição ou fotos e clique em salvar.
-* **Excluir do Estoque:**
-  * Se o carro não faz mais parte da loja, clique no ícone da **Lixeira** para removê-lo.
+* **Editar Informações ou Preço:**
+  * Clique no botão **Editar** (ícone de lápis) no card do veículo. Altere o valor ou km e clique em salvar.
+* **Marcar como Vendido ou Excluir:**
+  * Altere o status para **"Vendido"** ou clique no ícone da **Lixeira** para remover do estoque ativo.
 
 ---
 
-## 👥 4. Outras Abas do Painel
+## 👥 4. Módulos de Vendas & Gestão de Leads
 
-* **Propostas & Leads:** Veja todos os clientes que enviaram mensagem pelo WhatsApp ou preencheram proposta de financiamento no site.
-* **Test Drive:** Agendamentos solicitados pelos clientes com data, horário e preferência de atendimento.
-* **Avaliações de Usados:** Propostas de clientes que querem dar o carro usado na troca.
+* **Simulações de Financiamento:** Visualize propostas com entrada, parcelas calculadas, banco selecionado e dados do cliente para aprovação de crédito.
+* **Avaliações de Usados na Troca:** Receba detalhes do carro do cliente (marca, ano, km, fotos) para gerar uma contraproposta de compra ou entrada.
+* **Agendamentos de Test Drive:** Visualize clientes que reservaram test drive com dia, horário e preferência (Showroom ou Delivery).
+* **Depoimentos de Compradores:** Modere e publique novas avaliações de clientes satisfeitos para fortalecer a prova social da loja.
 
 ---
 
-## 🛠️ Para o Programador: Conectando o Banco na Nuvem (Deploy)
+## 🛠️ Para o Desenvolvedor: Deploy na Nuvem (Vercel)
 
-Para que o site funcione 100% online quando hospedado (por exemplo, na **Vercel**):
+Para hospedar o site 100% online com banco de dados em nuvem:
 
-1. **Crie um banco PostgreSQL gratuito:**
-   * Recomendado: [Supabase](https://supabase.com) ou [Neon.tech](https://neon.tech).
-2. **Copie a string de conexão (Connection String):**
-   * Formato: `postgresql://postgres:[SENHA]@[HOST]:5432/[BANCO]?sslmode=require`
-3. **Configure as Variáveis de Ambiente na Vercel (Environment Variables):**
-   * `DATABASE_URL` = sua connection string do Supabase/Neon.
-   * `ADMIN_PASSWORD` = a senha que você definirá para o cliente acessar o `/admin`.
-   * `NEXT_PUBLIC_APP_URL` = o domínio oficial da loja (Ex: `https://modelomultimarcasjf.com.br`).
-4. **Pronto!** O site executará as migrações e criará a tabela de veículos automaticamente na primeira carga.
+1. **Crie um banco PostgreSQL gratuito (ex: Neon.tech ou Supabase)**.
+2. Copie a `DATABASE_URL` para as variáveis de ambiente na Vercel.
+3. Configure `ADMIN_PASSWORD` com a senha desejada para a concessionária.

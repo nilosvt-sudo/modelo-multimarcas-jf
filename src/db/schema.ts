@@ -87,7 +87,7 @@ export const appraisals = pgTable("appraisals", {
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
   authorName: text("author_name").notNull(),
-  neighborhood: text("neighborhood").default("Juiz de Fora - MG"),
+  neighborhood: text("neighborhood").default("São Paulo - SP"),
   rating: integer("rating").default(5).notNull(),
   comment: text("comment").notNull(),
   purchasedVehicle: text("purchased_vehicle"),

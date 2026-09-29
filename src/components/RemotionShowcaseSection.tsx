@@ -11,11 +11,10 @@ import {
   Pause,
   RotateCcw,
   Sparkles,
-  CarFront,
   ArrowUpRight,
   ShieldCheck,
   Film,
-  Maximize2
+  Car
 } from "lucide-react";
 import { WhatsAppIcon } from "@/components/SocialIcons";
 
@@ -24,7 +23,7 @@ interface RemotionShowcaseSectionProps {
   onSelectVehicle: (vehicle: Vehicle) => void;
 }
 
-const SLIDE_DURATION = 120; // 4 seconds at 30 fps
+const SLIDE_DURATION = 135; // 4.5 seconds per vehicle at 30 fps (smooth continuous transition)
 const FPS = 30;
 
 export default function RemotionShowcaseSection({
@@ -33,9 +32,9 @@ export default function RemotionShowcaseSection({
 }: RemotionShowcaseSectionProps) {
   const playerRef = useRef<PlayerRef>(null);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [isHoverPaused, setIsHoverPaused] = useState(false);
   const [currentCarIndex, setCurrentCarIndex] = useState(0);
 
-  // Take the top 5 featured or high-interest vehicles
   const showcaseVehicles: CarShowcaseItem[] = useMemo(() => {
     const list = vehicles.slice(0, 6).map((v) => ({
       id: v.id,
@@ -60,16 +59,33 @@ export default function RemotionShowcaseSection({
 
   const totalFrames = Math.max(1, showcaseVehicles.length * SLIDE_DURATION);
 
-  // Sync current playing index based on player frame updates
+  // Garantir autoplay inicial ativo assim que o componente monta
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (playerRef.current) {
+        playerRef.current.play();
+        setIsPlaying(true);
+      }
+    }, 150);
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Monitorar frame atual e atualizar o indicador de veículo ativo
   useEffect(() => {
     const player = playerRef.current;
     if (!player) return;
 
     const interval = setInterval(() => {
-      const frame = player.getCurrentFrame();
-      const calculatedIndex = Math.floor(frame / SLIDE_DURATION) % showcaseVehicles.length;
-      setCurrentCarIndex(calculatedIndex);
-    }, 200);
+      try {
+        const frame = player.getCurrentFrame();
+        if (showcaseVehicles.length > 0) {
+          const calculatedIndex = Math.floor(frame / SLIDE_DURATION) % showcaseVehicles.length;
+          setCurrentCarIndex(calculatedIndex);
+        }
+      } catch {
+        // Safe catch if player is re-rendering
+      }
+    }, 150);
 
     return () => clearInterval(interval);
   }, [showcaseVehicles.length]);
@@ -79,9 +95,26 @@ export default function RemotionShowcaseSection({
     if (isPlaying) {
       playerRef.current.pause();
       setIsPlaying(false);
+      setIsHoverPaused(false);
     } else {
       playerRef.current.play();
       setIsPlaying(true);
+      setIsHoverPaused(false);
+    }
+  };
+
+  // Pausa suave no hover (opcional e não intrusiva)
+  const handleMouseEnter = () => {
+    if (playerRef.current && isPlaying) {
+      playerRef.current.pause();
+      setIsHoverPaused(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (playerRef.current && isHoverPaused) {
+      playerRef.current.play();
+      setIsHoverPaused(false);
     }
   };
 
@@ -92,6 +125,7 @@ export default function RemotionShowcaseSection({
     if (!isPlaying) {
       playerRef.current.play();
       setIsPlaying(true);
+      setIsHoverPaused(false);
     }
   };
 
@@ -100,40 +134,43 @@ export default function RemotionShowcaseSection({
 
   const activeWhatsappUrl = generateWhatsAppLink(
     activeVehicle
-      ? `Olá! Estava assistindo ao Showroom Virtual no site da Modelo Multimarcas JF e me interessei no ${activeVehicle.brand} ${activeVehicle.model} ${activeVehicle.version} por ${formatCurrency(activeVehicle.price)}. Poderiam me enviar mais detalhes?`
-      : "Olá! Gostaria de mais informações sobre o estoque de seminovos."
+      ? `Olá! Vi a apresentação em vídeo do "${activeVehicle.brand} ${activeVehicle.model} ${activeVehicle.version}" no site da Apex Motors e gostaria de receber a ficha técnica e proposta de compra!`
+      : "Olá! Gostaria de mais informações sobre o estoque de veículos da Apex Motors."
   );
 
   if (showcaseVehicles.length === 0) return null;
 
   return (
-    <section className="py-3 bg-[#F8FAFC] dark:bg-[#06070a] text-slate-900 dark:text-slate-100 border-b border-slate-200 dark:border-[#232a38] transition-colors duration-200 w-full max-w-full overflow-hidden">
-      <div className="max-w-[1680px] mx-auto px-2 sm:px-4 md:px-6 lg:px-8 w-full max-w-full">
-        {/* Section Header Compacto */}
-        <div className="flex items-center justify-between gap-2 mb-2">
+    <section className="py-4 bg-slate-100/60 dark:bg-[#0a0c10] text-slate-900 dark:text-slate-100 border-b border-slate-200 dark:border-[#232a38] transition-colors duration-200 w-full max-w-full overflow-hidden">
+      <div className="max-w-[1680px] mx-auto px-4 sm:px-8 md:px-12 lg:px-16 w-full max-w-full">
+        {/* Section Header */}
+        <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="inline-flex items-center gap-1.5 text-xs font-speed font-bold uppercase tracking-widest text-[#e30613]">
+            <div className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-blue-600 dark:text-blue-400">
               <Film className="w-3.5 h-3.5" />
-              <span>{"// CINE SHOWROOM VIRTUAL"}</span>
+              <span>Vitrine Virtual Dinâmica</span>
             </div>
             <span className="text-slate-300 dark:text-slate-700 hidden sm:inline">•</span>
-            <h2 className="text-sm sm:text-base md:text-lg font-black text-zinc-900 dark:text-white tracking-tight uppercase italic font-speed">
-              Seminovos em Movimento
+            <h2 className="text-sm sm:text-base font-black text-slate-900 dark:text-white tracking-tight">
+              Ofertas em Alta Resolução
             </h2>
           </div>
 
-          {/* Realtime Live Engine Tag */}
           <div className="hidden sm:flex items-center gap-1.5 shrink-0">
-            <span className="bg-white dark:bg-[#0e1117] border border-slate-200 dark:border-[#232a38] text-slate-700 dark:text-slate-300 text-xs font-speed font-bold uppercase tracking-wider px-2.5 py-0.5 rounded shadow-xs flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping" />
-              Remotion Video Player
+            <span className="bg-white dark:bg-[#12151d] border border-slate-200 dark:border-[#232a38] text-blue-700 dark:text-blue-300 text-xs font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-lg shadow-xs flex items-center gap-1.5">
+              <span className={`w-1.5 h-1.5 rounded-full ${isPlaying && !isHoverPaused ? "bg-emerald-500 animate-ping" : "bg-amber-500"}`} />
+              Apex Motion Player {isPlaying && !isHoverPaused ? "• Autoplay Ativo" : "• Pausado"}
             </span>
           </div>
         </div>
 
-        {/* Video Player Display Container - Full Width & Immersive */}
-        <div className="bg-white dark:bg-[#0e1117] rounded-xl sm:rounded-2xl p-1.5 sm:p-2.5 border border-slate-200/90 dark:border-[#232a38] shadow-xl overflow-hidden w-full max-w-none transition-colors duration-200">
-          <div className="relative rounded-lg sm:rounded-xl overflow-hidden bg-slate-950 shadow-lg aspect-video w-full max-w-none">
+        {/* Video Player Display Container com Suporte a Hover Pause */}
+        <div
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          className="bg-white dark:bg-[#10131a] rounded-2xl p-2 sm:p-3 border border-slate-200 dark:border-[#232a38] shadow-lg overflow-hidden w-full max-w-none transition-colors duration-200"
+        >
+          <div className="relative rounded-xl overflow-hidden bg-slate-950 shadow-md aspect-video w-full max-w-none">
             <Player
               ref={playerRef}
               component={CarShowcaseComposition}
@@ -145,77 +182,75 @@ export default function RemotionShowcaseSection({
               fps={FPS}
               compositionWidth={1920}
               compositionHeight={1080}
-              className="w-full h-full aspect-video object-cover"
               style={{
                 width: "100%",
                 height: "100%",
-                objectFit: "cover",
               }}
-              autoPlay={true}
-              loop={true}
-              controls={false}
+              autoPlay
+              loop
             />
-
-            {/* Float Overlay Play/Pause Button */}
-            <div className="absolute top-2.5 right-2.5 sm:top-4 sm:right-4 z-20 flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handleTogglePlay}
-                className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/85 text-white backdrop-blur-md border border-white/20 flex items-center justify-center transition-all cursor-pointer shadow-md"
-                title={isPlaying ? "Pausar vídeo" : "Reproduzir vídeo"}
-                aria-label={isPlaying ? "Pausar vídeo" : "Reproduzir vídeo"}
-              >
-                {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 ml-0.5" />}
-              </button>
-            </div>
           </div>
 
-          {/* Interactive Navigation Thumbnails & Actions */}
-          <div className="mt-2 pt-2 border-t border-slate-100 dark:border-[#232a38] flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2">
-            {/* Cars Selector Pills */}
-            <div className="flex overflow-x-auto gap-1.5 no-scrollbar w-full py-0.5 items-center">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 font-speed shrink-0 mr-1">
-                Pular para:
-              </span>
-              {showcaseVehicles.map((car, idx) => (
+          {/* Interactive Player Controls & Quick-Action Bar */}
+          <div className="mt-2.5 flex flex-col md:flex-row md:items-center justify-between gap-3 pt-2 border-t border-slate-100 dark:border-[#232a38] px-1">
+            {/* Play/Pause & Thumbnails Selector com Divisor e Espaçamento Seguro */}
+            <div className="flex items-center gap-2.5 overflow-x-auto pb-1 md:pb-0 min-w-0">
+              {/* Botão de Controle Play/Pause Isolado */}
+              <div className="pr-2 border-r border-slate-200 dark:border-slate-800 shrink-0">
                 <button
-                  key={car.id}
                   type="button"
-                  onClick={() => handleJumpToCar(idx)}
-                  className={`px-2.5 py-1 rounded text-xs font-speed font-bold uppercase tracking-wider transition-all shrink-0 cursor-pointer flex items-center gap-1.5 border ${
-                    currentCarIndex === idx
-                      ? "bg-[#e30613] text-white border-[#e30613] shadow-xs"
-                      : "bg-slate-100 dark:bg-[#151821] hover:bg-slate-200 dark:hover:bg-[#1f2430] text-slate-700 dark:text-slate-300 border-slate-200 dark:border-[#232a38]"
+                  onClick={handleTogglePlay}
+                  aria-label={isPlaying ? "Pausar apresentação" : "Reproduzir apresentação"}
+                  className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer ${
+                    isPlaying
+                      ? "bg-blue-50 dark:bg-blue-950/40 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-800/40 hover:bg-blue-100"
+                      : "bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/40 hover:bg-emerald-100"
                   }`}
+                  title={isPlaying ? "Pausar apresentação" : "Reproduzir apresentação"}
                 >
-                  <CarFront className="w-3 h-3 shrink-0" />
-                  <span className="whitespace-nowrap">{car.brand} {car.model}</span>
+                  {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 fill-current" />}
                 </button>
-              ))}
-            </div>
+              </div>
 
-            {/* Quick Action for Currently Displayed Car */}
-            {activeVehicle && (
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 shrink-0 pt-1 lg:pt-0">
-                {originalVehicle && (
+              {/* Botões dos Veículos em Destaque */}
+              <div className="flex items-center gap-1.5 overflow-x-auto scrollbar-none py-0.5">
+                {showcaseVehicles.map((car, idx) => (
                   <button
                     type="button"
-                    onClick={() => onSelectVehicle(originalVehicle)}
-                    className="w-full sm:w-auto justify-center bg-slate-100 dark:bg-[#151821] hover:bg-slate-200 dark:hover:bg-[#1f2430] text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-[#232a38] font-speed font-bold uppercase tracking-wider text-xs px-3 py-1 rounded transition-all cursor-pointer flex items-center gap-1.5 shadow-xs"
+                    key={car.id}
+                    onClick={() => handleJumpToCar(idx)}
+                    className={`text-xs px-2.5 sm:px-3 py-1.5 rounded-lg font-bold transition-all shrink-0 cursor-pointer whitespace-nowrap ${
+                      currentCarIndex === idx
+                        ? "bg-blue-600 text-white shadow-xs ring-2 ring-blue-500/30"
+                        : "bg-slate-100 dark:bg-[#161a22] text-slate-700 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-[#1c222e]"
+                    }`}
                   >
-                    <span>Ver Ficha Completa</span>
-                    <ArrowUpRight className="w-3.5 h-3.5 shrink-0" />
+                    {idx + 1}. {car.brand} {car.model.split(" ")[0]}
                   </button>
-                )}
+                ))}
+              </div>
+            </div>
+
+            {/* Current Active Vehicle CTA */}
+            {activeVehicle && originalVehicle && (
+              <div className="flex items-center gap-2 justify-end">
+                <button
+                  type="button"
+                  onClick={() => onSelectVehicle(originalVehicle)}
+                  className="py-1.5 px-3 bg-blue-50 hover:bg-blue-100 dark:bg-blue-950/30 text-blue-900 dark:text-blue-200 rounded-xl text-xs font-bold border border-blue-200 dark:border-blue-800/40 transition-colors flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span>Ficha Técnica</span>
+                  <ArrowUpRight className="w-3.5 h-3.5" />
+                </button>
 
                 <a
                   href={activeWhatsappUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto justify-center bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-3 py-1 rounded transition-all flex items-center gap-1.5 shadow-xs whitespace-nowrap text-center"
+                  className="py-1.5 px-3 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 shadow-xs"
                 >
-                  <WhatsAppIcon className="w-3.5 h-3.5 fill-white shrink-0" />
-                  <span>Quero este {activeVehicle.model}</span>
+                  <WhatsAppIcon className="w-3.5 h-3.5 fill-white" />
+                  <span>Negociar no WhatsApp</span>
                 </a>
               </div>
             )}
