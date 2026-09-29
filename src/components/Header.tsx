@@ -49,6 +49,42 @@ export default function Header({
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Fechar menu mobile com tecla ESC
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  // Função de rolagem suave e precisa para as seções
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, targetId: string) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+
+    const cleanId = targetId.replace("#", "");
+    const targetElement = document.getElementById(cleanId);
+
+    if (targetElement) {
+      const headerOffset = 75;
+      const elementPosition = targetElement.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: "smooth",
+      });
+
+      // Atualiza URL sem recarregar
+      window.history.pushState(null, "", `#${cleanId}`);
+    } else {
+      window.location.href = `/#${cleanId}`;
+    }
+  };
+
   const whatsappGeneralLink = generateWhatsAppLink(
     "Olá! Estou navegando no site da loja e gostaria de mais informações sobre o estoque de veículos."
   );
@@ -98,7 +134,7 @@ export default function Header({
         </div>
       </div>
 
-      {/* Header Principal com Navbar em Linha Única */}
+      {/* Header Principal com Navbar */}
       <div
         className={`bg-white/95 dark:bg-[#0e1015]/95 backdrop-blur-md border-b border-slate-200/80 dark:border-[#232a38] transition-all duration-200 w-full box-border min-h-[70px] flex items-center overflow-visible ${
           scrolled ? "py-2 shadow-md" : "py-2.5"
@@ -110,10 +146,11 @@ export default function Header({
             <BrandLogo variant="header" />
           </div>
 
-          {/* Menu de Navegação Desktop (100% Horizontal em Linha Única) */}
-          <nav className="hidden xl:flex items-center gap-4 2xl:gap-6 text-xs lg:text-[13px] font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap shrink-0">
+          {/* Menu de Navegação Desktop (A partir de 1024px / lg) */}
+          <nav className="hidden lg:flex items-center gap-3.5 xl:gap-5 2xl:gap-6 text-xs lg:text-[13px] font-bold text-slate-700 dark:text-slate-300 whitespace-nowrap shrink-0">
             <a
               href="#estoque"
+              onClick={(e) => scrollToSection(e, "#estoque")}
               className="hover:text-[#0047cc] dark:hover:text-[#3b82f6] transition-colors flex items-center gap-1.5 text-[#0047cc] dark:text-[#3b82f6]"
             >
               <CarFront className="w-4 h-4" />
@@ -121,30 +158,35 @@ export default function Header({
             </a>
             <a
               href="#financiamento"
+              onClick={(e) => scrollToSection(e, "#financiamento")}
               className="hover:text-[#0047cc] dark:hover:text-[#3b82f6] transition-colors"
             >
               Simular Financiamento
             </a>
             <a
               href="#avaliacao"
+              onClick={(e) => scrollToSection(e, "#avaliacao")}
               className="hover:text-[#0047cc] dark:hover:text-[#3b82f6] transition-colors"
             >
               Avaliar Usado
             </a>
             <a
               href="#sobre"
+              onClick={(e) => scrollToSection(e, "#sobre")}
               className="hover:text-[#0047cc] dark:hover:text-[#3b82f6] transition-colors"
             >
               Sobre a Loja
             </a>
             <a
               href="#depoimentos"
+              onClick={(e) => scrollToSection(e, "#depoimentos")}
               className="hover:text-[#0047cc] dark:hover:text-[#3b82f6] transition-colors"
             >
               Depoimentos
             </a>
             <a
               href="#contato"
+              onClick={(e) => scrollToSection(e, "#contato")}
               className="hover:text-[#0047cc] dark:hover:text-[#3b82f6] transition-colors"
             >
               Localização
@@ -215,7 +257,7 @@ export default function Header({
               <button
                 type="button"
                 onClick={onOpenTestDrive}
-                className="hidden lg:inline-flex items-center gap-1.5 bg-[#0047cc] hover:bg-[#003bb3] text-white font-bold text-xs py-2 px-3 sm:px-3.5 rounded-xl shadow-sm hover:shadow-blue-600/25 transition-all cursor-pointer whitespace-nowrap"
+                className="hidden xl:inline-flex items-center gap-1.5 bg-[#0047cc] hover:bg-[#003bb3] text-white font-bold text-xs py-2 px-3 sm:px-3.5 rounded-xl shadow-sm hover:shadow-blue-600/25 transition-all cursor-pointer whitespace-nowrap"
               >
                 <CalendarCheck className="w-3.5 h-3.5" />
                 <span>Test Drive</span>
@@ -234,21 +276,22 @@ export default function Header({
               <span className="hidden sm:inline">WhatsApp</span>
             </a>
 
-            {/* Botão Menu Mobile */}
+            {/* Botão Menu Sanduíche Mobile (Visível em telas menores que lg) */}
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="xl:hidden p-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#1a1d24] rounded-xl border border-slate-200 dark:border-[#232a38] transition-colors cursor-pointer"
-              aria-label="Menu principal"
+              className="lg:hidden p-2 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#1a1d24] rounded-xl border border-slate-200 dark:border-[#232a38] transition-colors cursor-pointer"
+              aria-label={mobileMenuOpen ? "Fechar menu" : "Abrir menu"}
+              aria-expanded={mobileMenuOpen}
             >
-              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 text-red-500" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
         {/* Menu Dropdown Mobile Deslizante */}
         {mobileMenuOpen && (
-          <div className="xl:hidden bg-white dark:bg-[#0e1015] border-t border-slate-200 dark:border-[#232a38] px-4 py-4 space-y-3 animate-in slide-in-from-top-2 shadow-xl">
+          <div className="lg:hidden absolute top-full left-0 right-0 w-full bg-white/98 dark:bg-[#0e1015]/98 backdrop-blur-xl border-b border-slate-200 dark:border-[#232a38] px-4 py-4 space-y-3 shadow-2xl z-50 animate-in fade-in slide-in-from-top-3 duration-200">
             {/* Ações Rápidas no topo do menu mobile (Favoritos, Comparador e Tema) */}
             <div className="grid grid-cols-3 gap-2 pb-3 border-b border-slate-100 dark:border-[#232a38]">
               {onOpenFavorites && (
@@ -295,50 +338,50 @@ export default function Header({
               </div>
             </div>
 
-            {/* Links de Navegação */}
+            {/* Links de Navegação com Scroll Suave */}
             <nav className="flex flex-col space-y-1 text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-200">
               <a
                 href="#estoque"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151821] flex items-center gap-2 text-[#0047cc] dark:text-[#3b82f6]"
+                onClick={(e) => scrollToSection(e, "#estoque")}
+                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151821] flex items-center gap-2.5 text-[#0047cc] dark:text-[#3b82f6] active:bg-blue-50"
               >
                 <CarFront className="w-4 h-4" />
-                Estoque Completo
+                <span>Estoque Completo</span>
               </a>
               <a
                 href="#financiamento"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151821]"
+                onClick={(e) => scrollToSection(e, "#financiamento")}
+                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151821] flex items-center gap-2.5 active:bg-slate-200"
               >
-                Simulador de Financiamento
+                <span>Simulador de Financiamento</span>
               </a>
               <a
                 href="#avaliacao"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151821]"
+                onClick={(e) => scrollToSection(e, "#avaliacao")}
+                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151821] flex items-center gap-2.5 active:bg-slate-200"
               >
-                Avaliar Carro na Troca
+                <span>Avaliar Carro na Troca</span>
               </a>
               <a
                 href="#sobre"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151821]"
+                onClick={(e) => scrollToSection(e, "#sobre")}
+                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151821] flex items-center gap-2.5 active:bg-slate-200"
               >
-                Sobre a Loja
+                <span>Sobre a Apex Motors</span>
               </a>
               <a
                 href="#depoimentos"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151821]"
+                onClick={(e) => scrollToSection(e, "#depoimentos")}
+                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151821] flex items-center gap-2.5 active:bg-slate-200"
               >
-                Depoimentos
+                <span>Depoimentos de Clientes</span>
               </a>
               <a
                 href="#contato"
-                onClick={() => setMobileMenuOpen(false)}
-                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151821]"
+                onClick={(e) => scrollToSection(e, "#contato")}
+                className="p-2.5 rounded-xl hover:bg-slate-100 dark:hover:bg-[#151821] flex items-center gap-2.5 active:bg-slate-200"
               >
-                Localização do Showroom
+                <span>Localização do Showroom</span>
               </a>
             </nav>
 

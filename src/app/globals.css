@@ -43,6 +43,8 @@ html, body {
 html {
   background: #f8fafc;
   color-scheme: light;
+  scroll-behavior: smooth;
+  scroll-padding-top: 85px;
 }
 
 html.dark {
