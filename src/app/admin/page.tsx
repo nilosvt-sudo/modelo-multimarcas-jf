@@ -539,21 +539,17 @@ export default function AdminPage() {
         <div className="w-full max-w-md bg-white dark:bg-[#0e1117] border border-slate-200 dark:border-[#232a38] rounded-3xl p-8 sm:p-10 shadow-2xl relative z-10 transition-colors">
           <div className="text-center mb-8">
             <div className="inline-flex items-center justify-center mb-4">
-              <div className="relative overflow-hidden rounded-2xl bg-white dark:bg-black border border-slate-200 dark:border-[#232a38] shadow-md p-1 flex items-center justify-center">
-                <img
-                  src="/images/logo-oficial.jpg"
-                  alt={DEALERSHIP_INFO.name}
-                  className="h-14 w-14 object-contain rounded-xl"
-                />
+              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#0038a8] to-[#0066ff] shadow-md p-3 flex items-center justify-center">
+                <CarFront className="w-8 h-8 text-white" />
               </div>
             </div>
 
             <div className="flex items-center justify-center gap-2 mb-1.5">
-              <span className="font-speed font-black tracking-tight text-2xl text-slate-900 dark:text-white uppercase">
-                MODELO
+              <span className="font-speed font-black tracking-tight text-2xl text-slate-900 dark:text-white uppercase italic">
+                APEX
               </span>
-              <span className="font-speed font-black tracking-tight text-2xl text-red-600 uppercase">
-                MULTIMARCAS
+              <span className="font-speed font-black tracking-tight text-2xl text-red-600 uppercase italic">
+                MOTORS
               </span>
             </div>
             <p className="text-[11px] font-speed uppercase tracking-widest text-slate-500 dark:text-slate-400 font-semibold">
@@ -640,19 +636,15 @@ export default function AdminPage() {
             <div className="h-5 w-px bg-slate-200 dark:bg-[#232a38]" />
 
             <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-xl bg-slate-900 dark:bg-black border border-slate-200 dark:border-[#232a38] flex items-center justify-center overflow-hidden p-0.5 shrink-0 shadow-md">
-                <img
-                  src="/images/logo-oficial.jpg"
-                  alt="Logo"
-                  className="h-full w-full object-contain rounded-lg"
-                />
+              <div className="h-9 w-9 rounded-xl bg-gradient-to-br from-[#0038a8] to-[#0066ff] flex items-center justify-center shrink-0 shadow-md">
+                <CarFront className="w-4 h-4 text-white" />
               </div>
               <div className="flex items-center gap-1.5 select-none">
-                <span className="font-speed font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-tight">
-                  MODELO
+                <span className="font-speed font-black text-sm sm:text-base text-slate-900 dark:text-white uppercase tracking-tight italic">
+                  APEX
                 </span>
-                <span className="font-speed font-black text-sm sm:text-base text-red-600 uppercase tracking-tight">
-                  MULTIMARCAS
+                <span className="font-speed font-black text-sm sm:text-base text-red-600 uppercase tracking-tight italic">
+                  MOTORS
                 </span>
                 <span className="hidden md:inline-block text-[10px] bg-red-600/10 border border-red-600/30 text-red-600 dark:text-red-400 font-speed font-bold uppercase px-2 py-0.5 rounded-full ml-1.5 tracking-wider">
                   ADMIN

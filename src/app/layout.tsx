@@ -26,8 +26,8 @@ export const metadata: Metadata = {
     locale: "pt_BR",
   },
   icons: {
-    icon: "/images/logo-oficial.png",
-    apple: "/images/logo-oficial.png",
+    icon: "/images/logo-apex.svg",
+    apple: "/images/logo-apex.svg",
   },
 };
 
