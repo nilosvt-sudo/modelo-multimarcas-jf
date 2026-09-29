@@ -25,10 +25,6 @@ export const metadata: Metadata = {
     type: "website",
     locale: "pt_BR",
   },
-  icons: {
-    icon: "/images/logo-apex.svg",
-    apple: "/images/logo-apex.svg",
-  },
 };
 
 export const viewport: Viewport = {
